@@ -58,6 +58,11 @@ grails {
         // filteringCodecForContentType.'text/html' = 'html'
     }
 }
+grails.project.dependency.resolution = {
+	plugins {
+	   compile ":validation-field:0.2"
+	}
+ }
 
 
 grails.converters.encoding = "UTF-8"

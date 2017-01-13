@@ -110,8 +110,9 @@
 			   click on each to execute its default action:</p>
 			   <div id=link-to-app>
 			   <h2> Implementation </h2>
-			   <g:link controller="customer" action="index">Customer List</g:link>
-			   <g:link controller="customer" action="index">Customer List</g:link>
+			   <g:link controller="customer" action="displayform">Add A Customer</g:link>
+			   <ul></ul>
+			   <g:link controller="customer" action="listcustomers">Customer List</g:link>
 			   </div>
 			   
 
