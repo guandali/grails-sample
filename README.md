@@ -14,6 +14,11 @@ The job of this web app is managing customer forms.
 + **Two roles:** Customer and System admin; only System admin could do search by id to retrive customer information.
 
 
+## Design in details 
+
++ CustomerController 
+
+
 ## Installation
 
 Need to complete.

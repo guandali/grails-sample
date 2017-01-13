@@ -1,13 +1,10 @@
 package cm
-import grails.rest.*
-import grails.converter.*
 
+class CustomerController {
+	
 
-class CustomerController extends RestfulController {
-    static reponseFormats = ['json', 'xml'];
-	CustomerController(){
-		super(Customer);
-	}
-   
-    
+    def index() {
+		println "@CustomerController index()";
+		render "Hello World";
+    }
 }

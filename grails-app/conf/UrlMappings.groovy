@@ -8,6 +8,8 @@ class UrlMappings {
         }
 
         "/"(view:"/index")
+		"/viewcustomers"(redirect: '/customers/list')
+		"/customer"(controller:"customer",action:"list")
         "500"(view:'/error')
 	}
 }
