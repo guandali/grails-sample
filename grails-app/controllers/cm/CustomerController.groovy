@@ -3,7 +3,7 @@ import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 class CustomerController {
 	
-    Integer uniqueID = 1000;
+    Integer uniqueID = 2000;
 	
 	def getUniqueID(){
 		return ++ uniqueID;
@@ -16,7 +16,9 @@ class CustomerController {
 		println"@CustomerController.listcustomers()";
 		//Customer sample_customer = createSampleCustomers();
 		//println sample_customer.customer_first_name;
-		[sample_customer:sample_customer];
+		// List all instances 
+		def list = Customer.list();
+		[list: list];
 
 		
 	}
