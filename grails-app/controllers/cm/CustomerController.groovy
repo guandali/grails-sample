@@ -1,16 +1,21 @@
 package cm
-
+import static org.springframework.http.HttpStatus.*
+import grails.transaction.Transactional
 class CustomerController {
 	
-
+    Integer uniqueID = 1000;
+	
+	def getUniqueID(){
+		return ++ uniqueID;
+	}
     def index() {
 		println "@CustomerController index()";
 		render "Hello World";
     }
 	def listcustomers(){
 		println"@CustomerController.listcustomers()";
-		Customer sample_customer = createSampleCustomers();
-		println sample_customer.customer_first_name;
+		//Customer sample_customer = createSampleCustomers();
+		//println sample_customer.customer_first_name;
 		[sample_customer:sample_customer];
 
 		
@@ -44,6 +49,28 @@ class CustomerController {
 		println "createuser";
 		render "OK";
 		println params;
+		println getUniqueID();
+		def aCustomer = new Customer(
+			customer_id:                        getUniqueID(),
+			customer_first_name:                params.customer_first_name,
+			customer_last_name:                 params.customer_last_name,
+			adddress:                           params.company_name,
+			email_address:                      params.email_address,
+			sign_up_date:                       new Date()
+		);
+	  // Validate format 
+	   if (aCustomer.validate()){
+		   aCustomer.save();
+		   println "saved";
+		   println aCustomer.customer_id;
+	   }
+	   else {
+		   println "violated schema constraints"
+	   }
+	   return;
+	   
+	   
+		
 	
 		
 	}
