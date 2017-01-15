@@ -30,6 +30,26 @@ class CustomerController {
 		
 		
 	}
+	
+	/** findbyid 
+	 * Use dynamic finder to find a GORM instance by customer_id
+	 * Check if it is valid 
+	 * @return
+	 */
+	
+	def findbyid(){
+		println "findbyid";
+		
+		def result = Customer.findByCustomer_id(params.q);
+		println result.customer_last_name ;
+	    //def result = Customer.list();
+		//println "null is:" + null.getClass();
+		//println "result is" + result.getClass();
+		
+		//println result.customer_id;
+		
+		
+	}
 	//Methods for testing =
 	def createSampleCustomers(){
 		println"@CustomerController.createSampleCustomers()";

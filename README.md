@@ -17,7 +17,7 @@ The job of this web app is managing customer forms.
 ## Design in details 
 
 + CustomerController 
-+ Form handling 
++ Two level of validations: on the page and domain. 
 
 
 ## Installation
