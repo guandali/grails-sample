@@ -31,7 +31,11 @@
             <td>${customer.customer_last_name}, ${customer.customer_first_name}</td>
             <td>${customer.email_address}</td>
             <td>${customer.customer_id} </td>
-            <td> <button  type="button" class="button">  <g:link controller="customer" action="editProfile" parmas="[customer_id:'customer.customer_id']"> Edit </g:link> </button> </td>>
+            <td> 			
+                <g:form url="[resource:customer, action:'load']" method="PUT" >
+						<g:actionSubmit class="load" action="load" value="Update" />
+			</g:form>
+			</td>>
         </tr>
         </g:each>        
     </table>

@@ -5,9 +5,10 @@ class UrlMappings {
         "/customer"(resources: 'customer')
        
        "/"(view:"/index")
-	   "/list"(view:"/customer/listcustomers",controller:"customer",action:"list")
+	   //"/customer/create"(controller:"customer",action:"create")
+	   "/customer/list"(view:"/customer/listcustomers",controller:"customer",action:"list")
     	//"/customers"(view:"/customer/listcustomers",controller:"customer",action:"list")
-		"/register"(view:"/customer/displayform",controller:"customer", action:"displayform")
+		"/customer/register"(view:"/customer/displayform",controller:"customer", action:"displayform")
 		"/search"(view:"/customer/search")
 //		"/customer/editProfile"(view:"/customer/userinfo", controller:"customer", action:"editProfile")
 		

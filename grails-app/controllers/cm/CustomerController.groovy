@@ -1,13 +1,13 @@
 package cm
-import java.util.UUID
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
+import org.codehaus.groovy.grails.web.json.JSONObject
 class CustomerController {
-	
-    Integer uniqueID = 3000;
+	Integer uid = 10001;
+
 	
 	def getUniqueID(){
-		return UUID.randomUUID().toString();
+		return uid++;
 	}
     def index() {
        
@@ -23,8 +23,6 @@ class CustomerController {
 	//Load a user for form
 	def displayform(){
 		println"@CustomerControllerdisplayform()";
-		Customer tem_customer = new Customer();
-		[tem_customer: tem_customer];
 		
 		
 	}
@@ -46,12 +44,12 @@ class CustomerController {
 		//Reuse list page
 		render (view:"/customer/list", model: [list: result]);
 	}
+
 	// Create a new user and save it
-	def createUser(){
+	def create(){
+		def failureSummary = new JSONObject();
 		println "createuser";
-		render "OK";
 		println params;
-		println getUniqueID();
 		def aCustomer = new Customer(
 			customer_id:                        getUniqueID(),
 			customer_first_name:                params.customer_first_name,
@@ -65,21 +63,34 @@ class CustomerController {
 		   aCustomer.save();
 		   println "saved";
 		   println aCustomer.customer_id;
-		   return list();
+		  render (view:"/customer/list", model: [list: aCustomer]);
+		  return;
 		   // Add return statement, otherwise the control flow will keep going
 	   }
 	   else {
+		   def typeOfError ="violated schema constraints";
+		   failureSummary.put("type", typeOfError)
 		   println "violated schema constraints"
 		   aCustomer.errors.allErrors.each {
 			   println it
 		   }
-           return render('/');
+		   def map = [failure:failureSummary]
+		   render(view:"/customer/errinfo", model: map);
+		   return;
 
 	   }
-	   return;
+	   
 	
 	}
-	
+	/* load 
+	 * load a user based on request 
+	 */
+	def load (){
+		println "-------------------load------------------------"
+		println params;
+		
+		
+	}
 	
 	/*
 	 * editProfile
