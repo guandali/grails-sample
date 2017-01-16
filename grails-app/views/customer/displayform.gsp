@@ -126,12 +126,6 @@
     </style>
 	</head>
 	<body>
-	    <div>
-	        <g:form   controller="customer" action="findbyid" onkeypress='validate(event)'>
-            <g:textField name="q" value="${params.q}"/>
-            <g:submitButton name="findbyid" value="Search"/>
-        </g:form>
-	    </div>
 		<g:form name="registration_form" controller="customer"  >
 		<div>
 		    <label for="lastName">Last Name</label>
@@ -146,6 +140,7 @@
 		 <div>
 		    <label for="companyname">Company Name</label>
 		    <g:textField name="company_name" placeholder="Optional "value=''/>
+		    Opt out: <g:checkBox name="checkbox" value="no" />
 		    <br/>
 		 </div>
 		    <label for="address">Address</label>

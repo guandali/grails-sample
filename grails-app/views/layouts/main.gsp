@@ -17,7 +17,11 @@
 		<g:layoutHead/>
 	</head>
 	<body>
-		<div id="grailsLogo" role="banner"><a href="http://grails.org"><asset:image src="grails_logo.png" alt="Grails"/></a></div>
+		<div id="grailsLogo" role="banner"><a href="/customer_manager"><asset:image src="grails_logo.png" alt="Grails"/></a>	    <g:form   controller="customer" action="findbyid" onkeypress='validate(event)'>
+            <g:textField name="q" value="${params.q}"/>
+            <g:submitButton name="findbyid" value="Search"/>
+        </g:form>
+		</div>
 		<g:layoutBody/>
 		<div class="footer" role="contentinfo"></div>
 		<div id="spinner" class="spinner" style="display:none;"><g:message code="spinner.alt" default="Loading&hellip;"/></div>

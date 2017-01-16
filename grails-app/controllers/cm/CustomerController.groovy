@@ -13,18 +13,15 @@ class CustomerController {
        
     }
 	def list(){
-		println"@CustomerController.listcustomers()";
 		// List all instances 
 		def list = Customer.list();
 		[list: list];
-
-		
 	}
+	
 	//Load a user for form
 	def displayform(){
 		println"@CustomerControllerdisplayform()";
-		
-		
+
 	}
 	
 	/** findbyid 
@@ -47,14 +44,14 @@ class CustomerController {
 
 	// Create a new user and save it
 	def create(){
-		def failureSummary = new JSONObject();
 		println "createuser";
 		println params;
 		def aCustomer = new Customer(
 			customer_id:                        getUniqueID(),
 			customer_first_name:                params.customer_first_name,
 			customer_last_name:                 params.customer_last_name,
-			adddress:                           params.company_name,
+			company_name:                       params.company_name,
+			address:                            params.address,
 			email_address:                      params.email_address,
 			sign_up_date:                       new Date()
 		);
@@ -68,16 +65,8 @@ class CustomerController {
 		   // Add return statement, otherwise the control flow will keep going
 	   }
 	   else {
-		   def typeOfError ="violated schema constraints";
-		   failureSummary.put("type", typeOfError)
-		   println "violated schema constraints"
-		   aCustomer.errors.allErrors.each {
-			   println it
-		   }
-		   def map = [failure:failureSummary]
-		   render(view:"/customer/errinfo", model: map);
-		   return;
-
+		   def typeOfError ="Violated Schema Constraints";
+           return handleException(typeOfError);
 	   }
 	   
 	
@@ -86,8 +75,12 @@ class CustomerController {
 	 * load a user based on request 
 	 */
 	def load (){
-		println "-------------------load------------------------"
-		println params;
+		def aCustomer = Customer.get(params.id);
+		if (aCustomer == null){
+			def typeOfError = "Cannot Acees This Customer"
+			return handleException(typeOfError);
+		}	
+		render(view:"/customer/load", model: [aCustomer: aCustomer]);
 		
 		
 	}
@@ -95,12 +88,49 @@ class CustomerController {
 	/*
 	 * editProfile
 	 * Allow user to modify existing profile
-	 * Only part of profile could be modified including: address, email_address
+	 * Only part of profile could be modified including: address
 	 * 
 	 */
-	def editProfile(){
+	def edit(){
+		def typeOfError = "Update failed";
 		println params;
-		println "editProfile";
+        try{
+			def target = Customer.findByCustomer_id(params.id);
+			if(!target.address.equals(params.address)){
+				target.address = params.address;
+			}
+			if(!target.company_name.equals(params.company_name)){
+				println "company name changed"
+				target.company_name = params.company_name;
+				println target.company_name;
+				
+			}
+             target.save(flush: true, failOnError: true)
+		
+		}
+		catch (Exception e){
+			return handleException(typeOfError);
+		}
+		finally {
+			redirect(controller:"customer", action:"list");
+			
+		}
+		
+		
+	}
+	
+	/**
+	 * Customized error message 
+	 * @param typeOfError
+	 * @return
+	 */
+	def handleException(typeOfError){	
+		def failureSummary = new JSONObject();
+		failureSummary.put("type", typeOfError);
+		def map = [failure:failureSummary]
+		render(view:"/customer/errinfo", model: map);
+		return;
+		
 		
 	}
 	
