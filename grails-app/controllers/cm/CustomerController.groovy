@@ -34,21 +34,19 @@ class CustomerController {
 	/** findbyid 
 	 * Use dynamic finder to find a GORM instance by customer_id
 	 * Check if it is valid 
-	 * @return
+	 * @return a valid customer instance
 	 */
-	
 	def findbyid(){
-		println "findbyid";
 		
 		def result = Customer.findByCustomer_id(params.q);
+		if (result == null) {
+			println "result is" + result.getClass();
+			redirect url: "/search";
+			return;
+		}
 		println result.customer_last_name ;
-	    //def result = Customer.list();
-		//println "null is:" + null.getClass();
-		//println "result is" + result.getClass();
-		
-		//println result.customer_id;
-		
-		
+		//Reuse listcustomer page
+		render (view:"/customer/listcustomers", model: [list: result]);
 	}
 	//Methods for testing =
 	def createSampleCustomers(){
@@ -90,10 +88,18 @@ class CustomerController {
 		   println "violated schema constraints"
 	   }
 	   return;
-	   
-	   
-		
 	
+	}
+	
+	
+	/*
+	 * editProfile
+	 * Allow user to modify existing profile
+	 * Only part of profile could be modified including: address, email_address
+	 * 
+	 */
+	def editProfile(){
+		println params;
 		
 	}
 	

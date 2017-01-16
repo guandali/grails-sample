@@ -7,6 +7,12 @@
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
 	</head>
 	<body>
+	    <div>
+	        <g:form   controller="customer" action="findbyid" onkeypress='validate(event)'>
+            <g:textField name="q" value="${params.q}"/>
+            <g:submitButton name="findbyid" value="Search"/>
+        </g:form>
+	    </div>
 		<g:form name: "registerform" controller="customer" method="post" id='form-horizontal' class="form-horizontal">
 		    <label for="lastName">Last Name</label>
 		    <g:textField name="customer_last_name" value="${tem_customer.customer_last_name}" required="true"/>
@@ -25,5 +31,17 @@
 		    <br/>
 		    <g:actionSubmit action="createauser" value="Create An Account" />
 		</g:form>
+		<script>
+			function validate(evt) {
+				  var theEvent = evt || window.event;
+				  var key = theEvent.keyCode || theEvent.which;
+				  key = String.fromCharCode( key );
+				  var regex = /[0-9]|\./;
+				  if( !regex.test(key) ) {
+				    theEvent.returnValue = false;
+				    if(theEvent.preventDefault) theEvent.preventDefault();
+				  }
+				}
+		</script>
 	</body>
 </html>
