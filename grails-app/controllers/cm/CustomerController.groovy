@@ -1,21 +1,19 @@
 package cm
+import java.util.UUID
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 class CustomerController {
 	
-    Integer uniqueID = 2000;
+    Integer uniqueID = 3000;
 	
 	def getUniqueID(){
-		return ++ uniqueID;
+		return UUID.randomUUID().toString();
 	}
     def index() {
-		println "@CustomerController index()";
-		render "Hello World";
+       
     }
-	def listcustomers(){
+	def list(){
 		println"@CustomerController.listcustomers()";
-		//Customer sample_customer = createSampleCustomers();
-		//println sample_customer.customer_first_name;
 		// List all instances 
 		def list = Customer.list();
 		[list: list];
@@ -45,27 +43,11 @@ class CustomerController {
 			return;
 		}
 		println result.customer_last_name ;
-		//Reuse listcustomer page
-		render (view:"/customer/listcustomers", model: [list: result]);
-	}
-	//Methods for testing =
-	def createSampleCustomers(){
-		println"@CustomerController.createSampleCustomers()";
-		Customer c0 = new Customer (		
-		customer_id:                        1,
-		customer_first_name:                'Larry',
-		customer_last_name:                 'Li',
-	    adddress:                           '#930 Cambie',
-		email_address:                      'coliguanda@gmail.com',
-		sign_up_date:                       new Date()
-		);
-	 println c0.sign_up_date;
-	 c0.save();
-	 return c0;
-	
+		//Reuse list page
+		render (view:"/customer/list", model: [list: result]);
 	}
 	// Create a new user and save it
-	def createauser(){
+	def createUser(){
 		println "createuser";
 		render "OK";
 		println params;
@@ -83,9 +65,16 @@ class CustomerController {
 		   aCustomer.save();
 		   println "saved";
 		   println aCustomer.customer_id;
+		   return list();
+		   // Add return statement, otherwise the control flow will keep going
 	   }
 	   else {
 		   println "violated schema constraints"
+		   aCustomer.errors.allErrors.each {
+			   println it
+		   }
+           return render('/');
+
 	   }
 	   return;
 	
@@ -100,6 +89,7 @@ class CustomerController {
 	 */
 	def editProfile(){
 		println params;
+		println "editProfile";
 		
 	}
 	

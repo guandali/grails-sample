@@ -13,7 +13,7 @@
             <g:submitButton name="findbyid" value="Search"/>
         </g:form>
 	    </div>
-		<g:form name: "registerform" controller="customer" method="post" id='form-horizontal' class="form-horizontal">
+		<g:form controller="customer" action="createUser"  >
 		    <label for="lastName">Last Name</label>
 		    <g:textField name="customer_last_name" value="${tem_customer.customer_last_name}" required="true"/>
 		    <br/>
@@ -29,7 +29,7 @@
 		    <label for="email_address">Email Address</label>
 		    <g:textField name="email_address" placeholder='Enter your Email' value='' required="true"/>
 		    <br/>
-		    <g:actionSubmit action="createauser" value="Create An Account" />
+		    <g:actionSubmit  value="Create An Account" />
 		</g:form>
 		<script>
 			function validate(evt) {

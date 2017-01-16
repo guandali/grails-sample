@@ -1,17 +1,18 @@
 class UrlMappings {
 
 	static mappings = {
-        "/$controller/$action?/$id?(.$format)?"{
-            constraints {
-                // apply constraints here
-            }
-        }
-
-        "/"(view:"/index")
-		"/customers"(view:"/customer/listcustomers",controller:"customer",action:"listcustomers")
+		"/$controller/$action?/$id?"{}
+        "/customer"(resources: 'customer')
+       
+       "/"(view:"/index")
+	   "/list"(view:"/customer/listcustomers",controller:"customer",action:"list")
+    	//"/customers"(view:"/customer/listcustomers",controller:"customer",action:"list")
 		"/register"(view:"/customer/displayform",controller:"customer", action:"displayform")
 		"/search"(view:"/customer/search")
-		"/customer_manager/${customer.customer_id}/edit"(view:"/customer/userinfo",controller:"customer", action:"editProfile")
+//		"/customer/editProfile"(view:"/customer/userinfo", controller:"customer", action:"editProfile")
+		
+		
+		//"/customer/${customer.customer_id}/edit"(view:"/customer/userinfo")
 		//"/findbyid"( controller:"customer", action:"findByID")
 		
 		//"/customer/findByID"(view:"/index", controller:"customer", action:"search")

@@ -2,7 +2,7 @@ package cm
 
 
 class Customer {
-	Integer customer_id;
+	String customer_id;
 	String customer_first_name;
 	String customer_last_name;
 	String company_name;

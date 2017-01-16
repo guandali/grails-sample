@@ -112,7 +112,9 @@
 			   <h2> Implementation </h2>
 			   <g:link controller="customer" action="displayform">Add A Customer</g:link>
 			   <ul></ul>
-			   <g:link controller="customer" action="listcustomers">Customer List</g:link>
+			   <g:link controller="customer" action="list">Customer List</g:link>
+
+			   
 			   </div>
 			   
 
