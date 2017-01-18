@@ -3,18 +3,15 @@ import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 import org.codehaus.groovy.grails.web.json.JSONObject
 class CustomerController {
-	Integer uid = 10001;
+	
+	def customerService;
 
 	
-	def getUniqueID(){
-		return uid++;
-	}
     def index() {
        
     }
 	def list(){
-		// List all instances 
-		def list = Customer.list();
+		def list = customerService.getCustomersList();
 		[list: list];
 	}
 	
@@ -31,7 +28,7 @@ class CustomerController {
 	 */
 	def findbyid(){
 		
-		def result = Customer.findByCustomer_id(params.q);
+		def result = customerService.getCustomerByID(params);
 		if (result == null) {
 			println "result is" + result.getClass();
 			redirect url: "/search";
@@ -44,17 +41,7 @@ class CustomerController {
 
 	// Create a new user and save it
 	def create(){
-		println "createuser";
-		println params;
-		def aCustomer = new Customer(
-			customer_id:                        getUniqueID(),
-			customer_first_name:                params.customer_first_name,
-			customer_last_name:                 params.customer_last_name,
-			company_name:                       params.company_name,
-			address:                            params.address,
-			email_address:                      params.email_address,
-			sign_up_date:                       new Date()
-		);
+		def aCustomer = customerService.createCustomer(params);
 	  // Validate format 
 	   if (aCustomer.validate()){
 		   aCustomer.save();
@@ -75,14 +62,12 @@ class CustomerController {
 	 * load a user based on request 
 	 */
 	def load (){
-		def aCustomer = Customer.get(params.id);
+		def aCustomer = customerService.getCustomer(params);
 		if (aCustomer == null){
 			def typeOfError = "Cannot Acees This Customer"
 			return handleException(typeOfError);
 		}	
 		render(view:"/customer/load", model: [aCustomer: aCustomer]);
-		
-		
 	}
 	
 	/*
@@ -95,19 +80,9 @@ class CustomerController {
 		def typeOfError = "Update failed";
 		println params;
         try{
-			def target = Customer.findByCustomer_id(params.id);
-			if(!target.address.equals(params.address)){
-				target.address = params.address;
-			}
-			if(!target.company_name.equals(params.company_name)){
-				println "company name changed"
-				target.company_name = params.company_name;
-				println target.company_name;
-				
-			}
-             target.save(flush: true, failOnError: true)
-		
+			customerService.editCustomerProfile(params);
 		}
+		// Be specific about exception type....
 		catch (Exception e){
 			return handleException(typeOfError);
 		}

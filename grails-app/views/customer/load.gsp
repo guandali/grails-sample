@@ -140,7 +140,6 @@
 		    <br/>
 		 </div>
 		 <div>
-		    <g:hiddenField name="id" value="${aCustomer.customer_id}" />
 		    <label for="customer_id">ID</label>
 		    <g:textField name="customer_id" value="${aCustomer.customer_id}"  required="false" disabled="disabled"/>
 		    <br/>

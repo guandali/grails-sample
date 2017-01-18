@@ -15,9 +15,11 @@ The job of this web app is managing customer forms.
 
 ## Design in details 
 
-+ CustomerController 
++ CustomerController  
++ ErrorController
++ Service Layer CustomerService
 + Two level of validations: on the page and domain.
-+ Trying to use services  
++ Refactord to use services  
 
 
 ## Installation
