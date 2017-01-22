@@ -2,21 +2,24 @@ class UrlMappings {
 
 	static mappings = {
 		"/$controller/$action?/$id?"{}
-        "/customer"(resources: 'customer')
+		
+
+		//"/customers"(resources:'customer', excludes:['delete', 'update'])
+
        
        "/"(view:"/index")
-	   "/customer/list"(view:"/customer/listcustomers",controller:"customer",action:"list")
+	   "/customers"(view:"/customer/listcustomers",controller:"customer",action:"list", method:"GET")
+	   "/customers"(controller:"customer",action:"create", method:"POST")
+	   "/customers/search/${searchString}"(controller:"customer",action:"findCustomer", method:"GET")
+	   
+	   
+	   "/customers/${id}"(controller:"customer",action:"getUser", method:"GET")
+	   "/customers/${id}"(controller:"customer",action:"editProfile", method:"POST") //Update Customer 
+	   
+	   //"/customers/search"
 
-		"/customer/register"(view:"/customer/displayform",controller:"customer", action:"displayform")
+		"/customer/signup"(view:"/customer/signup")
 		"/search"(view:"/customer/search")
-//		"/customer/editProfile"(view:"/customer/userinfo", controller:"customer", action:"editProfile")
-		
-		
-		//"/customer/${customer.customer_id}/edit"(view:"/customer/userinfo")
-		//"/findbyid"( controller:"customer", action:"findByID")
-		//"/customers"(view:"/customer/listcustomers",controller:"customer",action:"list")
-		
-		//"/customer/findByID"(view:"/index", controller:"customer", action:"search")
         "500"(view:'/error')
 	}
 }

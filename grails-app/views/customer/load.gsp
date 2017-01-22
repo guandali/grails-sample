@@ -152,7 +152,7 @@
 		    <label for="address">Address</label>
 		    <g:textField name="address" value="${aCustomer.address}" required="true"/>
 		    <br/>
-		    <g:actionSubmit  action ="edit" value="Save" />
+		    <g:actionSubmit  action ="editProfile" value="Save" />
 		</g:form>
 		<script>
 			function validate(evt) {

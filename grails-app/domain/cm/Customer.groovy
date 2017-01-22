@@ -1,6 +1,11 @@
 package cm
+import org.grails.datastore.gorm.*
+import grails.rest.*
 
-
+/*
+ * Expose Customer class as a REST resource 
+ */
+@Resource(uri='/customers')
 class Customer {
 	String customer_id;
 	String customer_first_name;
@@ -17,7 +22,7 @@ class Customer {
 		customer_last_name                 blank: false
 		company_name                       nullable:true
 	    address                            blank: false
-		email_address                      blank:false, email:true
+		email_address                      blank:false, email:true, unique: true
 		sign_up_date                       blank:false
 
 		

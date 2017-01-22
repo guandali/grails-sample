@@ -1,42 +1,40 @@
 package cm
+import grails.converters.*
+import grails.rest.*
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 import org.codehaus.groovy.grails.web.json.JSONObject
-class CustomerController {
-	
+
+
+class CustomerController extends RestfulController{
+	static responseFormats = ['json', 'xml'];
 	def customerService;
 
 	
-    def index() {
-       
-    }
 	def list(){
-		def list = customerService.getCustomersList();
-		[list: list];
+		//println request;
+		println request.contextPath;
+		def customerList = customerService.getCustomersList();
+		respond customerList;
 	}
 	
-	//Load a user for form
-	def displayform(){
-		println"@CustomerControllerdisplayform()";
-
-	}
 	
-	/** findbyid 
+	/** findUserByName
 	 * Use dynamic finder to find a GORM instance by customer_id
 	 * Check if it is valid 
 	 * @return a valid customer instance
 	 */
-	def findbyid(){
+	def findCustomer(){
+		println "CustomerController.findCustomer";
+		println "searchString:" + params.searchString;
 		
-		def result = customerService.getCustomerByID(params);
+		def result = customerService.getCustomerByName(params.searchString);
 		if (result == null) {
-			println "result is" + result.getClass();
-			redirect url: "/search";
-			return;
+           
 		}
 		println result.customer_last_name ;
 		//Reuse list page
-		render (view:"/customer/list", model: [list: result]);
+		//render (view:"/customer/list", model: [list: result]);
 	}
 
 	// Create a new user and save it
@@ -47,7 +45,8 @@ class CustomerController {
 		   aCustomer.save();
 		   println "saved";
 		   println aCustomer.customer_id;
-		  render (view:"/customer/list", model: [list: aCustomer]);
+		  //render (view:"/customer/list", model: [list: aCustomer]);
+		   respond aCustomer;
 		  return;
 		   // Add return statement, otherwise the control flow will keep going
 	   }
@@ -58,16 +57,15 @@ class CustomerController {
 	   
 	
 	}
-	/* load 
-	 * load a user based on request 
-	 */
-	def load (){
+	
+	def getUser(){
+		println "----------CustomerController.getUser--------------"
 		def aCustomer = customerService.getCustomer(params);
 		if (aCustomer == null){
-			def typeOfError = "Cannot Acees This Customer"
+			def typeOfError = "Cannot Access This Customer"
 			return handleException(typeOfError);
 		}	
-		render(view:"/customer/load", model: [aCustomer: aCustomer]);
+		respond aCustomer;
 	}
 	
 	/*
@@ -76,22 +74,19 @@ class CustomerController {
 	 * Only part of profile could be modified including: address
 	 * 
 	 */
-	def edit(){
+	def editProfile(){
+		println "Request: " + request.JSON.toString();
 		def typeOfError = "Update failed";
-		println params;
+		println  "params :" + params.id;
+		
         try{
-			customerService.editCustomerProfile(params);
+			def resultCustomer = customerService.editCustomerProfile(params);
+			respond resultCustomer;
 		}
 		// Be specific about exception type....
 		catch (Exception e){
 			return handleException(typeOfError);
 		}
-		finally {
-			redirect(controller:"customer", action:"list");
-			
-		}
-		
-		
 	}
 	
 	/**
@@ -103,8 +98,8 @@ class CustomerController {
 		def failureSummary = new JSONObject();
 		failureSummary.put("type", typeOfError);
 		def map = [failure:failureSummary]
-		render(view:"/customer/errinfo", model: map);
-		return;
+		//render(view:"/customer/errinfo", model: map);
+		respond failureSummary;
 		
 		
 	}

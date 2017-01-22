@@ -12,7 +12,7 @@ class CustomerService {
 	}
 	
 	def getCustomer(params){
-		return Customer.get(params.id);
+		return Customer.read(params.id);
 		
 	}
 
@@ -38,24 +38,35 @@ class CustomerService {
 		
 	}
 	
-	
-	def editCustomerProfile(params){
+	/* Function editCustomerProfile
+	 * Modify a existing customer's profile (company_name, address ONLY)
+	 * 
+	 */
+	def editCustomerProfile(params) {
 		println "editCustomerProfile";
-		def target = Customer.findByCustomer_id(params.id);
-		if(!target.address.equals(params.address)){
+		def target = Customer.get(params.id);
+		println "---------DB---"+ target.company_name;
+		if(!target.address.equals(params.address) || params.address != null){
 			target.address = params.address;
 		}
-		if(!target.company_name.equals(params.company_name)){
+		if(!target.company_name.equals(params.company_name) || params != null){
 			println "company name changed"
 			target.company_name = params.company_name;
 			println target.company_name;
 			
 		}
 		 target.save(flush: true, failOnError: true);
-		 return;
-		
-		
+		 return target;
+
 	}
+	
+	/* Function getCustomerByName 
+	 * Find a or more than customer by: 
+	 * customer_first_name + customer_last_name
+	 * 
+	 * 
+	 */
+	def getCustomerByName(){}
 	
 	
 }
