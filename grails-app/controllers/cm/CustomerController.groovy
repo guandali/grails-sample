@@ -39,12 +39,12 @@ class CustomerController extends RestfulController{
 
 	// Create a new user and save it
 	def create(){
+		println "params" + params;
 		def aCustomer = customerService.createCustomer(params);
 	  // Validate format 
 	   if (aCustomer.validate()){
 		   aCustomer.save();
 		   println "saved";
-		   println aCustomer.customer_id;
 		  //render (view:"/customer/list", model: [list: aCustomer]);
 		   respond aCustomer;
 		  return;
