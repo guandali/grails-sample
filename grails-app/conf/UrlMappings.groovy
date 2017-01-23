@@ -8,6 +8,7 @@ class UrlMappings {
 
        
        "/"(view:"/index")
+	   "/signup"(view:"/customer/registerform")
 	   "/customers"(view:"/customer/listcustomers",controller:"customer",action:"list", method:"GET")
 	   "/customers"(controller:"customer",action:"create", method:"POST")
 	   "/customers/search/${searchString}"(controller:"customer",action:"findCustomer", method:"GET")
@@ -18,7 +19,6 @@ class UrlMappings {
 	   
 	   //"/customers/search"
 
-		"/customer/signup"(view:"/customer/signup")
 		"/search"(view:"/customer/search")
         "500"(view:'/error')
 	}

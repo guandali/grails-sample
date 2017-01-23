@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="customerApp">
+<html lang="en" >
   <head>
     <meta charset="utf-8">
     <title>My HTML File</title>
@@ -13,7 +13,7 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="js/app.js"></script>
   </head>
-  <body ng-controller="CustomerListController">
+  <body ng-app="customerApp" ng-controller="RegistrationController">
     <style>
       body {
         min-height: 2000px;
@@ -30,7 +30,7 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="/customer_manager">Home</a></li>
             <li><a href="/customer_manager/signup">Sign Up</a></li>
             <li><a href="#contact">Contact</a></li>
             <li class="dropdown">
@@ -55,30 +55,69 @@
       </div>
     </div>
    <ul>
-   
-      <p>
-        Quick Search:
-        <input ng-model="$ctrl.query">
-      </p>
-		<div class="panel panel-default">
-		  <div class="panel-heading">Customer List</div>
-		  <table class="table">
-			  <tr>
-			    <th>Firstname</th>
-			    <th>Lastname</th> 
-			    <th>Email</th>
-			  </tr>
-			  <tr ng-repeat="customer in customerList | filter:$ctrl.query">
-			    <th>{{customer.customer_first_name}}</th>
-			    <th>{{customer.customer_last_name}}</th> 
-			    <th>{{customer.email_address}}</th>
-			  </tr>
+   <form name="myform"
+   method="POST"
+   action="/customer_manager/customers"
+    ng-submit="register()"
+    novalidate>
 
-		  </table>
-		</div>
+    <div class="textintro">
+      <h1>Form Validation</h1>
+      <p>Please fill out the following form</p>
+      <p ng-show="message">{{ message }}</p>
+    </div>
+
+    <fieldset>
+    <div>
+      <input type="text" name="firstname" 
+        placeholder="First Name"
+        ng-model="user.firstname"
+        ng-required="true">
+        <p class="error validationerror" ng-show="myform.firstname.$invalid && myform.firstname.$touched">
+        You must fill out your first name.</p>
+     </div>
+     <div>
+      <input type="text" name="lastname"
+        placeholder="Last Name" 
+        ng-model="user.lastname"
+        ng-required="true">
+        <p class="error validationerror" ng-show="myform.lastname.$invalid && myform.lastname.$touched">
+        You must fill out your last name.</p>
+     </div>
+      <div>
+      <input type="email" name="email"
+        placeholder="Email" 
+        ng-model="user.email">
+        <p class="error validationerror" ng-show="myform.email.$invalid && myform.email.$touched">
+      </div>
+      <div>
+      <input type="text" name="address"
+        placeholder="Address" 
+        ng-model="user.address"
+        ng-required="true">
+        <p class="error validationerror" ng-show="myform.address.$invalid && myform.address.$touched">
+        You must fill out your address.</p>
+     </div>
+      
+
+     <div>
+      <input type="text" name="schoolname"
+        placeholder="School Name" 
+        ng-model="user.schoolname"
+        ng-required="false">
+     </div>
+    </fieldset>
+    
+
+    <button type="submit" class="btn">Submit</button>
+  </form>
+    
+    
+    
+   
 		   
    </ul>
-       <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/script.js"></script>
     <script src="dist/js/vendor/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="dist/js/flat-ui.min.js"></script>
