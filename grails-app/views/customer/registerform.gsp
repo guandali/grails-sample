@@ -69,26 +69,29 @@
 
     <fieldset>
     <div>
-      <input type="text" name="firstname" 
+      <input type="text" name="customer_first_name" 
         placeholder="First Name"
-        ng-model="user.firstname"
+        ng-model="user.customer_first_name"
         ng-required="true">
-        <p class="error validationerror" ng-show="myform.firstname.$invalid && myform.firstname.$touched">
+        <p class="error validationerror" ng-show="myform.customer_first_name.$invalid && myform.customer_first_name.$touched">
         You must fill out your first name.</p>
      </div>
      <div>
-      <input type="text" name="lastname"
+      <input type="text" name="customer_last_name"
         placeholder="Last Name" 
-        ng-model="user.lastname"
+        ng-model="user.customer_last_name"
         ng-required="true">
-        <p class="error validationerror" ng-show="myform.lastname.$invalid && myform.lastname.$touched">
+        <p class="error validationerror" ng-show="myform.customer_last_name.$invalid && myform.customer_last_name.$touched">
         You must fill out your last name.</p>
      </div>
       <div>
-      <input type="email" name="email"
+      <input type="email" name="email_address"
         placeholder="Email" 
-        ng-model="user.email">
-        <p class="error validationerror" ng-show="myform.email.$invalid && myform.email.$touched">
+        ng-model="user.email_address"
+        ng-model-options="{ updateOn: 'blur' }"
+        >
+        <p >{{user.email}}</p>
+        <p class="error validationerror" ng-show="myform.email_address.$invalid && myform.email_address.$touched">
       </div>
       <div>
       <input type="text" name="address"
@@ -101,9 +104,9 @@
       
 
      <div>
-      <input type="text" name="schoolname"
+      <input type="text" name="school_name"
         placeholder="School Name" 
-        ng-model="user.schoolname"
+        ng-model="user.schoo_lname"
         ng-required="false">
      </div>
     </fieldset>

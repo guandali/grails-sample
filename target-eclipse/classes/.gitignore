@@ -1,14 +1,5 @@
-/asset/
-/cm/
-/customer_manager/
-/dbdoc/
 /grails/
-/hibernate/
-/hibernate.cfg.xml
-/javascripts/
 /org/
-/spring/
-/uglifyjs/
 /AssetPipelineBootStrap$_closure1.class
 /AssetPipelineBootStrap.class
 /AssetUrlMappings$__clinit__closure1.class
@@ -81,5 +72,8 @@
 /UrlMappings$__clinit__closure1.class
 /UrlMappings$__clinit__closure1_closure2.class
 /UrlMappings.class
+/asset/
+/cm/
+/customer_manager/
 /resources$_run_closure1.class
 /resources.class

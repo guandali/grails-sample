@@ -89,6 +89,11 @@ class CustomerController extends RestfulController{
 		}
 	}
 	
+	def validateEmail(){
+		println params.email;
+	    respond customerService.getUserByEmail(params.email);
+	}
+	
 	/**
 	 * Customized error message 
 	 * @param typeOfError

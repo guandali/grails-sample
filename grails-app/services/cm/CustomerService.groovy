@@ -68,4 +68,12 @@ class CustomerService {
 	def getCustomerByName(){}
 	
 	
+	
+	def getUserByEmail(email){
+		return Customer.findByEmail_address(email);
+		
+		
+	}
+	
+	
 }

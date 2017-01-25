@@ -1,3 +1,4 @@
+//URLs publishes all resources 
 class UrlMappings {
 
 	static mappings = {
@@ -7,19 +8,20 @@ class UrlMappings {
 		//"/customers"(resources:'customer', excludes:['delete', 'update'])
 
        
-       "/"(view:"/index")
-	   "/signup"(view:"/customer/registerform")
-	   "/customers"(view:"/customer/listcustomers",controller:"customer",action:"list", method:"GET")
-	   "/customers"(controller:"customer",action:"create", method:"POST")
-	   "/customers/search/${searchString}"(controller:"customer",action:"findCustomer", method:"GET")
+       "/"(view:"index")
+       "/test"(view:"/test")
+	   "/api/customers"(controller:"customer",action:"list", method:"GET")
+	   "/api/customers"(controller:"customer",action:"create", method:"POST")
+	   "/api/customers/search/${searchString}"(controller:"customer",action:"findCustomer", method:"GET")
 	   
 	   
-	   "/customers/${id}"(controller:"customer",action:"getUser", method:"GET")
-	   "/customers/${id}"(controller:"customer",action:"editProfile", method:"POST") //Update Customer 
+	   "/api/customers/${id}"(controller:"customer",action:"getUser", method:"GET")
+	   "/api/customers/${id}"(controller:"customer",action:"editProfile", method:"POST") //Update Customer 
 	   
-	   //"/customers/search"
+	   
+	   "/api/utils/checkuniqueemail/${email}"(controller:"customer", action:"validateEmail", method:"GET");
 
-		"/search"(view:"/customer/search")
+		"/api/search"(view:"/customer/search")
         "500"(view:'/error')
 	}
 }
