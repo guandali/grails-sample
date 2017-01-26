@@ -1,5 +1,18 @@
-<div class="jumbotron text-center">
-    <h1>Home Page 4 Life</h1>
+ <br>
+ <br>
+ <div>
+ 	 <h3>Create a new customer</h3>
+ </div>
+ <div>
+ 	 <form ng-submit="createCustomer()" style="margin-top:30px;">
 
-    <p>{{ tagline }}</p>
-</div>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Address" ng-model="address"></input>
+        <input type="text" class="form-control" placeholder="First Name" ng-model="firstname"></input>
+        <input type="text" class="form-control" placeholder="Last Name" ng-model="lastname"></input>
+        <input type="text" class="form-control" placeholder="Email" ng-model="email"></input>
+        <input type="text" class="form-control" placeholder="School Optional" ng-model="school"></input>
+      </div>
+      <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+ </div>

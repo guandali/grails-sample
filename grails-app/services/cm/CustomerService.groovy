@@ -25,13 +25,13 @@ class CustomerService {
 //		println "getCustomerByID";	
 //	}
 	
-	def createCustomer(params){
+	def createCustomer(data){
 	 return new Customer(
-			customer_first_name:                params.customer_first_name,
-			customer_last_name:                 params.customer_last_name,
-			school_name:                        params.school_name,
-			address:                            params.address,
-			email_address:                      params.email_address,
+			customer_first_name:                data.customer_first_name,
+			customer_last_name:                 data.customer_last_name,
+			school_name:                        data.school_name,
+			address:                            data.address,
+			email_address:                      data.email_address,
 			sign_up_date:                       new Date()
 		);
 		
