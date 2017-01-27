@@ -25,7 +25,40 @@ function($stateProvider, $urlRouterProvider) {
 	$urlRouterProvider.otherwise('home');
 }]);
 
+app.directive('useremail', function($q, $timeout, customers) {
+  console.log("app.directive");
+  return {
+    require: 'ngModel',
+    link: function(scope, elm, attrs, ctrl) {
+    var existingEmails = customers.customers.map(function(a){ return a.email_address});
+	console.log(existingEmails);
+      //var usernames = ['Jim', 'John', 'Jill', 'Jackie'];
 
+      ctrl.$asyncValidators.useremail = function(modelValue, viewValue) {
+
+        if (ctrl.$isEmpty(modelValue)) {
+          // consider empty model valid
+          return $q.resolve();
+        }
+
+        var def = $q.defer();
+
+        $timeout(function() {
+          // Mock a delayed response
+          if (existingEmails.indexOf(modelValue) === -1) {
+            // The username is available
+            def.resolve();
+          } else {
+            def.reject();
+          }
+
+        }, 2000);
+
+        return def.promise;
+      };
+    }
+  };
+});
 
 // customers Services
 
@@ -45,7 +78,7 @@ function($http, $location) {
 	//POST /customer_manager/api/customers
 	o.post = function(customer){
 		console.log(JSON.stringify(customer));
-		return $http.post('/customer_manager/api/customers', customer)
+		return $http.post('/customer_manager/api/customers', params: customer)
 		.success(function(data){
 			console.log(JSON.stringify(data));
 			return $location.path("home");
@@ -64,6 +97,7 @@ app.controller('MainCtrl', [
 '$scope',
 'customers',
 function($scope, customers) {
+	//Extracting just email_aadress for validation.
 	$scope.customers = customers.customers;
 }]);
 
