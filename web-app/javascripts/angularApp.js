@@ -76,7 +76,11 @@ function(customers){
             });
             var checkEmail = function () {
                 var userEmail = elm.val();
-                customers.isUniqueEmail(userEmail).then(function (result) {
+                console.log("userEmail IS :"  );
+                console.log(userEmail);
+                if (userEmail !== ''){
+
+                	customers.isUniqueEmail(userEmail).then(function (result) {
                 	console.log(result);
                     if (result === 'true') {
                     	console.log('result === true');
@@ -87,6 +91,9 @@ function(customers){
                     }
                 });
                 return userEmail;
+
+                }
+
             };
         }
     };

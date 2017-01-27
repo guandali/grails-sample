@@ -27,7 +27,7 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="/customer_manager/#/home">Home</a>
             </li>
-            <li><a href="/customer_manager/#/create">Create A Customer</a></li>
+            <li><a href="/customer_manager/#/create">Create </a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </div><!--/.nav-collapse -->
