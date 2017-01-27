@@ -9,11 +9,21 @@
       <div class="form-group">
         <label> Address</label>
         <input type="text" class="form-control" placeholder="Address" ng-model="address">
+        <label> First Name </label>
         <input type="text" class="form-control" placeholder="First Name" ng-model="firstname">
+        <label> Last Name </label>
         <input type="text" class="form-control" placeholder="Last Name" ng-model="lastname">
+
         <div>
-                <input type="email" name="email" class="form-control" placeholder="Email" ng-model="email"  />
-                <span ng-show="signupForm.email.$pending.uniquemail">Checking if this name is available...</span>
+                <label> Email </label>
+                <input type="email" name="userEmail" class="form-control" placeholder="Email" ng-model="email"
+                is-unique-email
+                ng-model-options="{updateOn: 'blur'}" />
+                 <span class="field-validity-error" 
+                 ng-show="signupForm.userEmail.$error.isUniqueEmail"> This email address already exists</span>
+
+
+                
         	
         </div>
 

@@ -60,6 +60,40 @@ app.directive('useremail', function($q, $timeout, customers) {
   };
 });
 
+//Create a customized directive for checking email
+app.directive('isUniqueEmail', [
+'customers', 
+function(customers){
+	console.log('app.directive');
+	 return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, elm, attrs, ctrl) {
+            if (!ctrl) return;
+            // Binded with 'blur' action 
+            elm.bind('blur', function () {
+                scope.$apply(checkEmail);
+            });
+            var checkEmail = function () {
+                var userEmail = elm.val();
+                customers.isUniqueEmail(userEmail).then(function (result) {
+                	console.log(result);
+                    if (result === 'true') {
+                    	console.log('result === true');
+                        ctrl.$setValidity('isUniqueEmail', true);
+                    }
+                    else {
+                    	ctrl.$setValidity('isUniqueEmail', false);
+                    }
+                });
+                return userEmail;
+            };
+        }
+    };
+
+
+}]);
+
 // customers Services
 
 app.factory('customers', [
@@ -87,7 +121,9 @@ function($http, $location) {
 	};
 	o.isUniqueEmail = function(unchecked_email){
 		console.log('isUniqueEmail');
-		return $http.get('/customer_manager/api/isuniquemail/' + unchecked_email).then(function(res) {
+		// A endpoint for checking unique email is implemented, we could also 
+		//Implement it in Angular itself rather than set a API endpoint
+		return $http.get('/customer_manager/api/customers/isuniquemail/' + unchecked_email).then(function(res) {
 			console.log(JSON.stringify('res' + res));
 			console.log(JSON.stringify('res.data' + res.data));
 			return res.data;
