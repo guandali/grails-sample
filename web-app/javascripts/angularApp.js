@@ -78,15 +78,22 @@ function($http, $location) {
 	//POST /customer_manager/api/customers
 	o.post = function(customer){
 		console.log(JSON.stringify(customer));
-		return $http.post('/customer_manager/api/customers', params: customer)
+		return $http.post('/customer_manager/api/customers', customer)
 		.success(function(data){
 			console.log(JSON.stringify(data));
 			return $location.path("home");
-		});
+		});             
 
-                       
+	};
+	o.isUniqueEmail = function(unchecked_email){
+		console.log('isUniqueEmail');
+		return $http.get('/customer_manager/api/isuniquemail/' + unchecked_email).then(function(res) {
+			console.log(JSON.stringify('res' + res));
+			console.log(JSON.stringify('res.data' + res.data));
+			return res.data;
+		});;
 
-	}
+	};
     console.log(JSON.stringify(o));
 	return o;
 }]);

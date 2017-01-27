@@ -69,10 +69,14 @@ class CustomerService {
 	
 	
 	
-	def getUserByEmail(email){
-		return Customer.findByEmail_address(email);
+	def findUserByEmail(email){
+		if (Customer.findByEmail_address(email) == null){
+			return 'true';	
+		}
+		return 'false';
 		
-		
+
+
 	}
 	
 	

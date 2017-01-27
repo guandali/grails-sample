@@ -18,6 +18,10 @@ class UrlMappings {
 	   "/api/customers/${id}"(controller:"customer",action:"getUser", method:"GET")
 	   "/api/customers/${id}"(controller:"customer",action:"editProfile", method:"POST") //Update Customer 
 	   
+	   "/api/customers/isuniquemail/${unchecked_mail}"(controller:"customer",action:"validateEmail", method:"GET")
+	   
+	   
+	   
 	   
 	   "/api/utils/checkuniqueemail/${email}"(controller:"customer", action:"validateEmail", method:"GET");
 

@@ -41,9 +41,9 @@ class CustomerController extends RestfulController{
 	def create(){
 		println "params" + params;
 		//Angular post ==> request.JSON.
-		//def rawData = request.JSON;
+		def rawData = request.JSON;
 		
-		def aCustomer = customerService.createCustomer(params);
+		def aCustomer = customerService.createCustomer(rawData);
 	   if (aCustomer.validate()){
 		   aCustomer.save();
 		   println "saved";
@@ -91,8 +91,12 @@ class CustomerController extends RestfulController{
 	}
 	
 	def validateEmail(){
-		println params.email;
-	    respond customerService.getUserByEmail(params.email);
+		println "------validateEmail------";
+		println params.unchecked_mail;
+	    def result =  customerService.findUserByEmail(params.unchecked_mail);
+		render result;
+		//respond [data : obj] as JSON;
+		
 	}
 	
 	/**
