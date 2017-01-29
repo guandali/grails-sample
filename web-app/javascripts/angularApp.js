@@ -16,6 +16,19 @@ function($stateProvider, $urlRouterProvider) {
 			}]
 
 		}
+	}).state('profile', {
+		url : '/profile/:id',
+		templateUrl : 'templates/profile.html',
+		controller : 'CustomerCtrl', 
+		resolve : { 
+			customer:['$stateParams', 'customers',
+			function($stateParams, customers) {
+				console.log('profile state:' + $stateParams.id);
+				return customers.get($stateParams.id);
+			}]
+
+		}
+
 	}).state('create', {
 		url : '/create',
 		templateUrl : 'templates/create.html',
@@ -25,45 +38,11 @@ function($stateProvider, $urlRouterProvider) {
 	$urlRouterProvider.otherwise('home');
 }]);
 
-app.directive('useremail', function($q, $timeout, customers) {
-  console.log("app.directive");
-  return {
-    require: 'ngModel',
-    link: function(scope, elm, attrs, ctrl) {
-    var existingEmails = customers.customers.map(function(a){ return a.email_address});
-	console.log(existingEmails);
-      //var usernames = ['Jim', 'John', 'Jill', 'Jackie'];
-
-      ctrl.$asyncValidators.useremail = function(modelValue, viewValue) {
-
-        if (ctrl.$isEmpty(modelValue)) {
-          // consider empty model valid
-          return $q.resolve();
-        }
-
-        var def = $q.defer();
-
-        $timeout(function() {
-          // Mock a delayed response
-          if (existingEmails.indexOf(modelValue) === -1) {
-            // The username is available
-            def.resolve();
-          } else {
-            def.reject();
-          }
-
-        }, 2000);
-
-        return def.promise;
-      };
-    }
-  };
-});
 
 //Create a customized directive for checking email
 app.directive('isUniqueEmail', [
 'customers',
-function(customers, ctrl){
+function(customers){
 	console.log('app.directive');
 	 return {
         restrict: 'A',
@@ -87,7 +66,7 @@ function(customers, ctrl){
                         ctrl.$setValidity('isUniqueEmail', true);
                     }
                     else {
-                    	$ctrl.checked = 'true';
+              
                     	ctrl.$setValidity('isUniqueEmail', false);
                     }
                 });
@@ -111,6 +90,13 @@ function($http, $location) {
 	var o = {
 		customers : []
 	};
+	o.get = function(id){
+	  return $http.get('/customer_manager/api/customers/' + id).then(function(res) {
+	  	    console.log(JSON.stringify(res.data));
+		    angular.copy(res.data, o.customer);
+		});
+
+	};
 
 	o.getAll = function() {
 		return $http.get('/customer_manager/api/customers').success(function(data) {
@@ -132,7 +118,6 @@ function($http, $location) {
 		// A endpoint for checking unique email is implemented, we could also 
 		//Implement it in Angular itself rather than set a API endpoint
 		return $http.get('/customer_manager/api/customers/isuniquemail/' + unchecked_email).then(function(res) {
-			console.log(JSON.stringify('res' + res));
 			console.log(JSON.stringify('res.data' + res.data));
 			return res.data;
 		});;

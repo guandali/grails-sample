@@ -31,7 +31,7 @@
                 is-unique-email
                 ng-model-options="{updateOn: 'blur'}" />
                  <span class="field-validity-error" 
-                 ng-show="signupForm.userEmail.$error.isUniqueEmail">  already exists</span>
+                 ng-show="signupForm.userEmail.$error.isUniqueEmail">  {{email}} already exists</span>
                  <p class="error validationerror" ng-show="signupForm.userEmail.$invalid && signupForm.userEmail.$touched">
                  You must fill out your email.</p>
         	
@@ -50,7 +50,6 @@
       signupForm.firstname.$invalid ||
       signupForm.address.$invalid ||
       signupForm.userEmail.$invalid
-
       ">Create</button>
     </form>
  </div>
