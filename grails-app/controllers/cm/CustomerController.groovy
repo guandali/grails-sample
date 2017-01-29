@@ -42,8 +42,9 @@ class CustomerController extends RestfulController{
 		println "params" + params;
 		//Angular post ==> request.JSON.
 		def rawData = request.JSON;
+		println rawData;
 		
-		def aCustomer = customerService.createCustomer(rawData);
+	   def aCustomer = customerService.createCustomer(rawData);
 	   if (aCustomer.validate()){
 		   aCustomer.save();
 		   println "saved";
@@ -52,6 +53,7 @@ class CustomerController extends RestfulController{
 //		    Add return statement, otherwise the control flow will keep going
 	   }
 	   else {
+		   println errors;
 		   def typeOfError ="Violated Schema Constraints";
            return handleException(typeOfError);
 	   }

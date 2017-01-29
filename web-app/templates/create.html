@@ -7,22 +7,33 @@
  	 <form name="signupForm" ng-submit="createCustomer()" style="margin-top:30px;" novalidate>
 
       <div class="form-group">
+        <br>
         <label> Address: </label>
         <input type="text" class="form-control" placeholder="Address" ng-model="address" name="address" ng-required="true">
+        <span>{{address}}</span>
         <p class="error validationerror" ng-show="signupForm.address.$invalid && signupForm.address.$touched">
-        You must fill out your first name.</p>
+        You must fill out your address.</p>
         <label> First Name </label>
-        <input type="text" class="form-control" placeholder="First Name" ng-model="firstname">
+        <input type="text" class="form-control" placeholder="First Name" ng-model="firstname" name="firstname" ng-required="true">
+        <p class="error validationerror" ng-show="signupForm.firstname.$invalid && signupForm.firstname.$touched">
+        You must fill out your firs tname.</p>
         <label> Last Name </label>
-        <input type="text" class="form-control" placeholder="Last Name" ng-model="lastname">
+        <input type="text" class="form-control" placeholder="Last Name" ng-model="lastname"
+        name="lastname" ng-required="true">
+        <p class="error validationerror" ng-show="signupForm.lastname.$invalid && signupForm.lastname.$touched">
+        You must fill out your last name.</p>
 
         <div>
                 <label> Email </label>
                 <input type="email" name="userEmail" class="form-control" placeholder="Email" ng-model="email"
+                name="email" 
+                ng-required="true"
                 is-unique-email
                 ng-model-options="{updateOn: 'blur'}" />
                  <span class="field-validity-error" 
-                 ng-show="signupForm.userEmail.$error.isUniqueEmail"> This email address already exists</span>
+                 ng-show="signupForm.userEmail.$error.isUniqueEmail">  already exists</span>
+                 <p class="error validationerror" ng-show="signupForm.userEmail.$invalid && signupForm.userEmail.$touched">
+                 You must fill out your email.</p>
         	
         </div>
 
@@ -34,6 +45,12 @@
         </div>
 
       </div>
-      <button type="submit" class="btn btn-primary" ng-disbaled="signupForm.userEmail.$error.isUniqueEmail">Create</button>
+      <button type="submit" class="btn btn-primary" ng-disabled="
+      signupForm.lastname.$invalid ||
+      signupForm.firstname.$invalid ||
+      signupForm.address.$invalid ||
+      signupForm.userEmail.$invalid
+
+      ">Create</button>
     </form>
  </div>

@@ -62,8 +62,8 @@ app.directive('useremail', function($q, $timeout, customers) {
 
 //Create a customized directive for checking email
 app.directive('isUniqueEmail', [
-'customers', 
-function(customers){
+'customers',
+function(customers, ctrl){
 	console.log('app.directive');
 	 return {
         restrict: 'A',
@@ -87,6 +87,7 @@ function(customers){
                         ctrl.$setValidity('isUniqueEmail', true);
                     }
                     else {
+                    	$ctrl.checked = 'true';
                     	ctrl.$setValidity('isUniqueEmail', false);
                     }
                 });
@@ -157,7 +158,7 @@ app.controller('CustomerCtrl', [
 'customers', 
 function($scope, customers){
 	//Submit form on /create page will invoke following 
-	$scope.createCustomer = function(){
+	$scope.createCustomer = function(signupForm){
 	    console.log('clicked');
 		// Need some validation 
 		//validCustomer is inputs that is validated 
