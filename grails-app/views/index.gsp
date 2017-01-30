@@ -8,6 +8,8 @@
 
   <!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script> -->
   <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="javascripts/angularApp.config.js
+"> </script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js"></script>
   <link href="bower_components/ax/css/xeditable.css" rel="stylesheet">
   <script src="bower_components/ax/js/xeditable.js"></script>

@@ -111,12 +111,10 @@ function($http, $location) {
 			angular.copy(data, o.customers);
 		});
 	};
-	//POST /customer_manager/api/customers
 	o.post = function(customer){
 		console.log(JSON.stringify(customer));
 		return $http.post('/customer_manager/api/customers', customer)
 		.success(function(data){
-			console.log(JSON.stringify(data));
 			return $location.path("home");
 		});             
 
@@ -126,7 +124,7 @@ function($http, $location) {
 		return $http.post('/customer_manager/api/customers/'+customer.id, customer)
 		.success(function(data){
 			console.log(JSON.stringify(data));
-			return $location.path("home");
+			return $location.path("/profile" + customer.id);
 		});             
 
 	};
@@ -154,26 +152,6 @@ function($scope, customers) {
 	$scope.customers = customers.customers;
 }]);
 
-// app.controller('EditCtrl', [
-// '$scope',
-// 'customers',
-// '$http'
-// function($scope, customers) {
-// 	$scope.customer = customers.customer;
-// 	  $scope.saveUser = function() {
-//     // $scope.user already updated!
-//     return $http.post('/customer_manager/api/customers/'+$scope.customer.id, $scope.customer).error(function(err) {
-//       if(err.field && err.msg) {
-//         // err like {field: "name", msg: "Server-side error for this username!"} 
-//         $scope.editableForm.$setError(err.field, err.msg);
-//       } else { 
-//         // unknown error
-//         $scope.editableForm.$setError('name', 'Unknown error!');
-//       }
-//     });
-//   };
-
-// }]);
 
 app.controller('EditableFormCtrl', function($scope, customers, $http) {
   console.log(customers.customer);
@@ -194,14 +172,7 @@ app.controller('EditableFormCtrl', function($scope, customers, $http) {
     console.log($scope.customer.customer_first_name);
     console.log('customer.school_name is ' + $scope.customer.school_name);
     console.log('$scope.customer is' + JSON.stringify($scope.customer));
-    // return $http.post('/customer_manager/api/customers/'+ $scope.customer.id, $scope.customer).error(function(err) {
-    //   if(err.field && err.msg) {
-    //     // err like {field: "name", msg: "Server-side error for this username!"} 
-    //     $scope.editableForm.$setError(err.field, err.msg);
-    //   } else { 
-    //     // unknown error
-    //     $scope.editableForm.$setError('name', 'Unknown error!');
-    //   }
+
     customers.update($scope.customer);
   };
 });

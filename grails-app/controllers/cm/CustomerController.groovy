@@ -33,13 +33,10 @@ class CustomerController extends RestfulController{
            
 		}
 		println result.customer_last_name ;
-		//Reuse list page
-		//render (view:"/customer/list", model: [list: result]);
 	}
 
 	// Create a new user and save it
 	def create(){
-		println "params" + params;
 		//Angular post ==> request.JSON.
 		def rawData = request.JSON;
 		println rawData;
@@ -62,7 +59,6 @@ class CustomerController extends RestfulController{
 	}
 	
 	def getUser(){
-		println "----------CustomerController.getUser--------------"
 		def aCustomer = customerService.getCustomer(params.id);
 		if (aCustomer == null){
 			def typeOfError = "Cannot Access This Customer"

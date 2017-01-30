@@ -14,11 +14,7 @@ class CustomerService {
 		return Customer.list();
     }
 	
-//	def getCustomerByID(params){
-//		return Customer.findByCustomer_id(params.q);
-//		println "getCustomerByID";	
-//	}
-	
+
 	def createCustomer(data){
 	 return new Customer(
 			customer_first_name:                data.customer_first_name,

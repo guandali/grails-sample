@@ -5,19 +5,7 @@
       ' profile 
       </div>
       <div class="panel-body"> 
-         <div>First Name: <a href="#" editable-text="customer.customer_first_name" onaftersave="updateCustomer()">{{ customer.customer_first_name || 'empty' }}</a></div>
-         <div>Last Name: <a href="#" editable-text="customer.customer_last_name" onaftersave="updateCustomer()">{{ customer.customer_last_name || 'empty' }}</a></div>
-         <div>Email: {{customer.email_address}}</div>
-         <div>Address: <a href="#" editable-text="customer.address" onaftersave="updateCustomer()">{{ customer.address || 'empty' }}</a></div>
-         <div>School: <a href="#" editable-text="customer.school_name" onaftersave="updateCustomer()">{{ customer.school_name || 'empty' }}</a></div>
-
-       </div>
-    </div>
-
-
-    <br>
-    <br>
-	  <form editable-form name="editableForm" onaftersave="saveUser()">
+       	  <form editable-form name="editableForm" onaftersave="saveUser()">
 	    <div>
 	      <!-- editable username (text with validation) -->
 	      <span class="title">First name: </span>
@@ -36,6 +24,7 @@
 	      <span editable-text="customer.address" e-name="address"  e-required>{{ customer.address || 'empty' }}</span>
 	    </div>  
 	    <div>
+
 	      <!-- editable username (text with validation) -->
 	      <span class="title">School: </span>
 	      <span editable-text="customer.school_name" e-name="school_name"  e-required>{{ customer.school_name || 'empty' }}</span>
@@ -54,7 +43,7 @@
 	      </button>
 	      <!-- buttons to submit / cancel form -->
 	      <span ng-show="editableForm.$visible">
-	        <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
+	        <button type="submit"   class="btn btn-primary" ng-disabled="editableForm.$waiting">
 	          Save
 	        </button>
 	        <button type="button" class="btn btn-default" ng-disabled="editableForm.$waiting" ng-click="editableForm.$cancel()">
@@ -63,6 +52,34 @@
 	      </span>
 	    </div>
 	  </form>  
+       </div>
+    </div>
+    <style type="text/css">
+			div[ng-app] { margin: 10px; }
+			form[name="editableForm"] > div {
+			  height: auto;
+			  padding: 5px 0;
+			}
+
+			form[name="editableForm"] .title {
+			  display: inline-block;
+			  font-weight: bold;
+			  padding-top: 5px;
+			  vertical-align: top;
+			  min-width: 90px;
+			}
+
+			form[name="editableForm"] .editable {
+			  display: inline-block;
+			  padding-top: 5px;
+			  vertical-align: top;
+			}
+
+			form[name="editableForm"] select {
+			  width: 120px;
+			}
+    </style>
+
 
 
 
