@@ -194,15 +194,15 @@ app.controller('EditableFormCtrl', function($scope, customers, $http) {
     console.log($scope.customer.customer_first_name);
     console.log('customer.school_name is ' + $scope.customer.school_name);
     console.log('$scope.customer is' + JSON.stringify($scope.customer));
-    return $http.post('/customer_manager/api/customers/'+ $scope.customer.id, $scope.customer.customer_last_name).error(function(err) {
-      if(err.field && err.msg) {
-        // err like {field: "name", msg: "Server-side error for this username!"} 
-        $scope.editableForm.$setError(err.field, err.msg);
-      } else { 
-        // unknown error
-        $scope.editableForm.$setError('name', 'Unknown error!');
-      }
-    });
+    // return $http.post('/customer_manager/api/customers/'+ $scope.customer.id, $scope.customer).error(function(err) {
+    //   if(err.field && err.msg) {
+    //     // err like {field: "name", msg: "Server-side error for this username!"} 
+    //     $scope.editableForm.$setError(err.field, err.msg);
+    //   } else { 
+    //     // unknown error
+    //     $scope.editableForm.$setError('name', 'Unknown error!');
+    //   }
+    customers.update($scope.customer);
   };
 });
 

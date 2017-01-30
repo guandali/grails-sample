@@ -84,7 +84,7 @@ class CustomerController extends RestfulController{
 		try{
             def rawData = request.JSON;
 		    println "rawData is" + rawData;
-			def resultCustomer = customerService.editCustomerProfile(params);
+			def resultCustomer = customerService.editCustomerProfile(rawData);
 			respond resultCustomer;
 		}
 		// Be specific about exception type....
