@@ -9,7 +9,6 @@ class UrlMappings {
 
        
        "/"(view:"index")
-       "/test"(view:"/test")
 	   "/api/customers"(controller:"customer",action:"list", method:"GET")
 	   "/api/customers"(controller:"customer",action:"create", method:"POST")
 	   "/api/customers/search/${searchString}"(controller:"customer",action:"findCustomer", method:"GET")

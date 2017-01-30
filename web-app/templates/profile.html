@@ -1,6 +1,68 @@
     <br>
     <br>
     <div class="panel panel-info">
-      <div class="panel-heading">{{customer.firstname}} {{customer.lastname}} </div>
-      <div class="panel-body">{{customer.customer_last_name}}</div>
+      <div class="panel-heading">{{customer.customer_first_name}} {{customer.customer_last_name}} 
+      ' profile 
+      </div>
+      <div class="panel-body"> 
+         <div>First Name: <a href="#" editable-text="customer.customer_first_name" onaftersave="updateCustomer()">{{ customer.customer_first_name || 'empty' }}</a></div>
+         <div>Last Name: <a href="#" editable-text="customer.customer_last_name" onaftersave="updateCustomer()">{{ customer.customer_last_name || 'empty' }}</a></div>
+         <div>Email: {{customer.email_address}}</div>
+         <div>Address: <a href="#" editable-text="customer.address" onaftersave="updateCustomer()">{{ customer.address || 'empty' }}</a></div>
+         <div>School: <a href="#" editable-text="customer.school_name" onaftersave="updateCustomer()">{{ customer.school_name || 'empty' }}</a></div>
+
+       </div>
     </div>
+
+
+    <br>
+    <br>
+	  <form editable-form name="editableForm" onaftersave="saveUser()">
+	    <div>
+	      <!-- editable username (text with validation) -->
+	      <span class="title">First name: </span>
+	      <span editable-text="customer.customer_first_name" e-name="customer_first_name"  e-required>{{ customer.customer_first_name || 'empty' }}</span>
+	    </div>  
+
+
+	    <div>
+	      <!-- editable username (text with validation) -->
+	      <span class="title">Last name: </span>
+	      <span editable-text="customer.customer_last_name" e-name="customer_last_name"  e-required>{{ customer.customer_last_name || 'empty' }}</span>
+	    </div>  
+	     <div>
+	      <!-- editable username (text with validation) -->
+	      <span class="title">Address: </span>
+	      <span editable-text="customer.address" e-name="address"  e-required>{{ customer.address || 'empty' }}</span>
+	    </div>  
+	    <div>
+	      <!-- editable username (text with validation) -->
+	      <span class="title">School: </span>
+	      <span editable-text="customer.school_name" e-name="school_name"  e-required>{{ customer.school_name || 'empty' }}</span>
+	    </div>  
+	    <div>
+	      <!-- editable username (text with validation) -->
+	      <span class="title">Email: </span>
+	      <span >{{ customer.email_address  }}</span>
+	    </div>  
+
+
+	    <div class="buttons">
+	      <!-- button to show form -->
+	      <button type="button" class="btn btn-default" ng-click="editableForm.$show()" ng-show="!editableForm.$visible">
+	        Edit
+	      </button>
+	      <!-- buttons to submit / cancel form -->
+	      <span ng-show="editableForm.$visible">
+	        <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
+	          Save
+	        </button>
+	        <button type="button" class="btn btn-default" ng-disabled="editableForm.$waiting" ng-click="editableForm.$cancel()">
+	          Cancel
+	        </button>
+	      </span>
+	    </div>
+	  </form>  
+
+
+

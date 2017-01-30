@@ -1,4 +1,4 @@
-var app = angular.module('customerManager', ['ui.router']);
+var app = angular.module('customerManager', ['ui.router', "xeditable"]);
 
 
 app.config(['$stateProvider', '$urlRouterProvider',
@@ -16,10 +16,11 @@ function($stateProvider, $urlRouterProvider) {
 			}]
 
 		}
-	}).state('profile', {
+	})
+	.state('profile', {
 		url : '/profile/:id',
 		templateUrl : 'templates/profile.html',
-		controller : 'CustomerCtrl', 
+		controller : 'EditableFormCtrl', 
 		resolve : { 
 			customer:['$stateParams', 'customers',
 			function($stateParams, customers) {
@@ -29,7 +30,8 @@ function($stateProvider, $urlRouterProvider) {
 
 		}
 
-	}).state('create', {
+	})
+	.state('create', {
 		url : '/create',
 		templateUrl : 'templates/create.html',
 		controller : 'CustomerCtrl' 
@@ -37,6 +39,11 @@ function($stateProvider, $urlRouterProvider) {
 
 	$urlRouterProvider.otherwise('home');
 }]);
+
+
+app.run(function(editableOptions) {
+  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
+});
 
 
 //Create a customized directive for checking email
@@ -88,7 +95,8 @@ app.factory('customers', [
 '$location',
 function($http, $location) {
 	var o = {
-		customers : []
+		customers : [],
+		customer :[],
 	};
 	o.get = function(id){
 	  return $http.get('/customer_manager/api/customers/' + id).then(function(res) {
@@ -113,6 +121,15 @@ function($http, $location) {
 		});             
 
 	};
+    o.update = function(customer){
+		console.log(JSON.stringify(customer));
+		return $http.post('/customer_manager/api/customers/'+customer.id, customer)
+		.success(function(data){
+			console.log(JSON.stringify(data));
+			return $location.path("home");
+		});             
+
+	};
 	o.isUniqueEmail = function(unchecked_email){
 		console.log('isUniqueEmail');
 		// A endpoint for checking unique email is implemented, we could also 
@@ -120,7 +137,7 @@ function($http, $location) {
 		return $http.get('/customer_manager/api/customers/isuniquemail/' + unchecked_email).then(function(res) {
 			console.log(JSON.stringify('res.data' + res.data));
 			return res.data;
-		});;
+		});
 
 	};
     console.log(JSON.stringify(o));
@@ -137,11 +154,66 @@ function($scope, customers) {
 	$scope.customers = customers.customers;
 }]);
 
+// app.controller('EditCtrl', [
+// '$scope',
+// 'customers',
+// '$http'
+// function($scope, customers) {
+// 	$scope.customer = customers.customer;
+// 	  $scope.saveUser = function() {
+//     // $scope.user already updated!
+//     return $http.post('/customer_manager/api/customers/'+$scope.customer.id, $scope.customer).error(function(err) {
+//       if(err.field && err.msg) {
+//         // err like {field: "name", msg: "Server-side error for this username!"} 
+//         $scope.editableForm.$setError(err.field, err.msg);
+//       } else { 
+//         // unknown error
+//         $scope.editableForm.$setError('name', 'Unknown error!');
+//       }
+//     });
+//   };
+
+// }]);
+
+app.controller('EditableFormCtrl', function($scope, customers, $http) {
+  console.log(customers.customer);
+  console.log(typeof customers.customer);
+  //$scope.customer = customers.customer;
+  $scope.customer = {
+   customer_first_name: customers.customer.customer_first_name,
+   customer_last_name:  customers.customer.customer_last_name,
+   id:                  customers.customer.id,
+   school_name:         customers.customer.school_name,
+   email_address:       customers.customer.email_address,
+   address:             customers.customer.address
+
+
+  };
+  $scope.saveUser = function() {
+    // $scope.user already updated!
+    console.log($scope.customer.customer_first_name);
+    console.log('customer.school_name is ' + $scope.customer.school_name);
+    console.log('$scope.customer is' + JSON.stringify($scope.customer));
+    return $http.post('/customer_manager/api/customers/'+ $scope.customer.id, $scope.customer.customer_last_name).error(function(err) {
+      if(err.field && err.msg) {
+        // err like {field: "name", msg: "Server-side error for this username!"} 
+        $scope.editableForm.$setError(err.field, err.msg);
+      } else { 
+        // unknown error
+        $scope.editableForm.$setError('name', 'Unknown error!');
+      }
+    });
+  };
+});
+
+
 
 app.controller('CustomerCtrl', [
 '$scope', 
 'customers', 
 function($scope, customers){
+	
+	
 	//Submit form on /create page will invoke following 
 	$scope.createCustomer = function(signupForm){
 	    console.log('clicked');
@@ -155,8 +227,6 @@ function($scope, customers){
 				    school_name            : $scope.school
 
 		});
-
-
 
 	}
 

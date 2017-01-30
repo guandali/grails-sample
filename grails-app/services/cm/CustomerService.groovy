@@ -4,15 +4,9 @@ import grails.transaction.Transactional
 
 @Transactional
 class CustomerService {
-	//May use other data type, upon request 
-	Integer uid = 100000;
 	
-	def getUniqueID(){
-		return uid++;
-	}
-	
-	def getCustomer(params){
-		return Customer.read(params.id);
+	def getCustomer(id){
+		return Customer.read(id);
 		
 	}
 
@@ -44,14 +38,25 @@ class CustomerService {
 	def editCustomerProfile(params) {
 		println "editCustomerProfile";
 		def target = Customer.get(params.id);
-		println "---------DB---"+ target.school_name;
-		if(!target.address.equals(params.address) || params.address != null){
+		if(!params.address.equals(target.address) && params.address != null && params.address != ''){
 			target.address = params.address;
 		}
-		if(!target.school_name.equals(params.school_name) || params != null){
+		if(!params.school_name.equals(target.school_name)&& params.school_name != null ){
 			println "school name changed"
 			target.school_name = params.school_name;
 			println target.school_name;
+			
+		}
+		if(!params.customer_first_name.equals(target.customer_first_name) && params.customer_first_name != null && params.customer_first_name != '' ){
+			println "customer_first_name changed"
+			target.customer_first_name = params.customer_first_name;
+			println target.customer_last_name;
+			
+		}
+		if(!params.customer_last_name.equals(target.customer_last_name) && params.customer_last_name != null && params.customer_last_name != '' ){
+			println "customer_last_name changed"
+			target.customer_last_name = params.customer_last_name;
+			println target.customer_last_name;
 			
 		}
 		 target.save(flush: true, failOnError: true);

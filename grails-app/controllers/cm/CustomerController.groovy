@@ -63,7 +63,7 @@ class CustomerController extends RestfulController{
 	
 	def getUser(){
 		println "----------CustomerController.getUser--------------"
-		def aCustomer = customerService.getCustomer(params);
+		def aCustomer = customerService.getCustomer(params.id);
 		if (aCustomer == null){
 			def typeOfError = "Cannot Access This Customer"
 			return handleException(typeOfError);
@@ -77,12 +77,13 @@ class CustomerController extends RestfulController{
 	 * Only part of profile could be modified including: address
 	 * 
 	 */
-	def editProfile(){
-		println "Request: " + request.JSON.toString();
+	def editProfile(){	
 		def typeOfError = "Update failed";
-		println  "params :" + params.id;
-		
-        try{
+		println  "id is :" + params.id;
+		println "params" + params;
+		try{
+            def rawData = request.JSON;
+		    println "rawData is" + rawData;
 			def resultCustomer = customerService.editCustomerProfile(params);
 			respond resultCustomer;
 		}
