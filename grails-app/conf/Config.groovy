@@ -120,3 +120,15 @@ log4j.main = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
+
+// Added by the JGit plugin:
+//jgit.userInfoHandler = 'org.grails.plugins.jgit.UserInfoHandler'
+//jgit.fallbackMap = [:]
+//jgit.fallbackEmailDefault = 'larry.li01@sap.com'
+//jgit.fallbackUsername = 'i859275'
+//jgit.branch = 'master'
+//jgit.gitRemoteURL = 'https://github.wdf.sap.corp/I859275/gisp-project-test-repo.git'
+//jgit.http.gitRemotelogin = 'i859275'
+//jgit.http.gitRemotePassword = 'Mimi1016!'
+//jgit.injectInto = ['Controller', 'Service','Domain']
+

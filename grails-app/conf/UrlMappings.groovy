@@ -9,6 +9,8 @@ class UrlMappings {
 
        
        "/"(view:"index")
+	   "/api/request/"(controller:"request", action:"index", method:"GET")
+	   "/api/request/getGitFiles"(controller:"request", action:"getGitFiles", method:"POST")
 	   "/api/customers"(controller:"customer",action:"list", method:"GET")
 	   "/api/customers"(controller:"customer",action:"create", method:"POST")
 	   "/api/customers/search/${searchString}"(controller:"customer",action:"findCustomer", method:"GET")
