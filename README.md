@@ -1,6 +1,7 @@
 # customer_manager
 
 ## Motivation
+To gain some experience in designing web application using grails, and AngularJS. 
 
 ## Discription
 
