@@ -19,8 +19,7 @@ Used customized directive to perform some advanced form validation.  Using Angul
 
 ## Installation
 
-Need to complete.
-
+Need to have Grails 2.4 installed. 
 
 
 
