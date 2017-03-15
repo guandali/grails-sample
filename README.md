@@ -1,6 +1,7 @@
 # customer_manager
 
 ## Motivation
+To gain some experience in designing web application using grails, and AngularJS. 
 
 ## Discription
 
@@ -19,8 +20,7 @@ Used customized directive to perform some advanced form validation.  Using Angul
 
 ## Installation
 
-Need to complete.
-
+Need to have Grails 2.4 installed. 
 
 
 
