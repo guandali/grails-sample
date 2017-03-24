@@ -14,7 +14,7 @@ class RequestController extends RestfulController {
 	}
 	
 	def upload(){
-		println "------------------------------------"
+		println "------------------------------------";
 		String typeOfFile = params.typeOfFile;
 		String resourceURL = params.resourceURL;
 		String typeRelatedInformation = params.typeRelatedInformation;

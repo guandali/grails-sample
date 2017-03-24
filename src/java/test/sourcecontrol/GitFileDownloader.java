@@ -13,11 +13,36 @@ import java.util.regex.Pattern;
 
 
 
-//import com.bosap.gisp.exceptions.GitCloneException;
-import org.eclipse.jgit.api.AddCommand;
+
+
+
+
+
+
+
+
+
+
+
+
 import org.eclipse.jgit.api.LsRemoteCommand;
+import org.eclipse.jgit.api.errors.TransportException;
+//import com.bosap.gisp.exceptions.GitCloneException;
+import org.eclipse.jgit.errors.UnsupportedCredentialItem;
+import org.eclipse.jgit.transport.CredentialItem;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.CredentialsProviderUserInfo;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.OpenSshConfig;
 import org.eclipse.jgit.transport.SshSessionFactory;
+import org.eclipse.jgit.transport.URIish;
+
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UserInfo;
+
+import test.sourcecontrol.support.GitExcutionException;
+
+
 
 public class GitFileDownloader extends FileDownloader {
 	
@@ -25,7 +50,7 @@ public class GitFileDownloader extends FileDownloader {
 	String completeFileLocation = "";
 	
 	static String PROTOCOL = "ssh";
-	List<String> knownHosts = new ArrayList<String>();
+	private static List<String> knownHosts = new ArrayList<String>();
     private static final Map<String, String>  portNumberMap;
     static
     {
@@ -141,7 +166,7 @@ public class GitFileDownloader extends FileDownloader {
 	
 	
 	
-	private List getGitRemoteBranchList(String gitRemoteLocation)throws  MalformedURLException, GitCloneException, Exception {
+	private List<String> getGitRemoteBranchList(String gitRemoteLocation)throws  MalformedURLException, GitExcutionException, Exception {
 		List <String> listOfBranches;
 		 System.out.println("completeGitRepoPath : " +  completeFileLocation);
 
@@ -150,11 +175,37 @@ public class GitFileDownloader extends FileDownloader {
 				// Jsch could find id_rsa stored under default path, otherwise may need to specify
 				// Also need a password and as part of config, need to make sure hosts we support is in known_host file under .ssh folder
 				// IMPORTANT: passpharse for ssh is hard-coded in GitShhConfigSessionFactory, neeed to let it pull from config file
-				JschConfigSessionFactory sessionFactory = new GitShhConfigSessionFactory()
-				SshSessionFactory.setInstance(sessionFactory);
+				//JschConfigSessionFactory sessionFactory = new GitShhConfigSessionFactory();
+				//SshSessionFactory.setInstance(sessionFactory);
 				//Construct a ls-remote command and call it through SSH
 				// Throw NoRemoteRepositoryException, JSchException
-				
+			JschConfigSessionFactory sessionFactory = new JschConfigSessionFactory() {
+				@Override
+				protected void configure(OpenSshConfig.Host hc, Session session) {
+				    CredentialsProvider provider = new CredentialsProvider() {
+				        @Override
+				        public boolean isInteractive() {
+				            return false;
+				        }
+
+				        @Override
+				        public boolean supports(CredentialItem... items) {
+				            return true;
+				        }
+
+				        @Override
+				        public boolean get(URIish uri, CredentialItem... items) throws UnsupportedCredentialItem {
+				            for (CredentialItem item : items) {
+				                ((CredentialItem.StringType) item).setValue("123456");
+				            }
+				            return true;
+				        }
+				    };
+				    UserInfo userInfo = new CredentialsProviderUserInfo(session, provider);
+				    session.setUserInfo(userInfo);
+				}
+				};
+				SshSessionFactory.setInstance(sessionFactory);
 				
 				
 				final LsRemoteCommand lsCmd = new LsRemoteCommand(null);
@@ -179,16 +230,13 @@ public class GitFileDownloader extends FileDownloader {
 					System.out.println("Branch :" + aBranch);
 					counter++;
 				}
-				System.out.println("The number of branches : " + counter;);
+				System.out.println("The number of branches : " + counter);
 				return listOfBranches;
 			
 		}
 		catch(TransportException  e ){
-			String errMsg = "";
-
-				println e.getClass();
-			    println e.getCause()
-				println e.getMessage()
+			    String errMsg = "";
+				System.out.println(e.getClass());
 				errMsg = "URL Format is valid, failed during run git command check if GTLC has access to the repo: ";
                 
 			
@@ -201,15 +249,29 @@ public class GitFileDownloader extends FileDownloader {
 	}
     @Override
 	boolean validate() throws MalformedURLException {
+    	boolean resultOfValidation = true;
 		String regex = "^(.*)\\.git$";
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(filePath);
 		if (!m.find()) {
+			resultOfValidation = false;
 			throw new MalformedURLException("Invalid Git address. Must be of the format: <host>/<path>.git");
 		}
 		constructCompleteFileLocation();
+		try {
+			List <String> listOfBranches = getGitRemoteBranchList(completeFileLocation);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GitExcutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		return false;
+		return resultOfValidation;
 	}
 
 	String retrieveFiles() {
