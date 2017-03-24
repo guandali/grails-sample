@@ -6,6 +6,7 @@ import grails.rest.RestfulController;
 
 import test.sourcecontrol.FileDownloader
 import test.sourcecontrol.FileDownloaderFactory
+import test.sourcecontrol.support.SourceControlExcutionException;
 
 class RequestController extends RestfulController {
 
@@ -22,8 +23,9 @@ class RequestController extends RestfulController {
 		try {
 			FileDownloader fileDownloader =  factory.getFileDownloder(typeOfFile, resourceURL, typeRelatedInformation);
 			fileDownloader.validate();
+			fileDownloader.retrieveFiles()
 			
-		}catch(MalformedURLException e ){
+		}catch(MalformedURLException | 	SourceControlExcutionException e ){
 		   // println e.printStackTrace();
 	       println "exception information :" + e.getMessage();
 		}

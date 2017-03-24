@@ -10,39 +10,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.LsRemoteCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.TransportException;
 //import com.bosap.gisp.exceptions.GitCloneException;
-import org.eclipse.jgit.errors.UnsupportedCredentialItem;
-import org.eclipse.jgit.transport.CredentialItem;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.CredentialsProviderUserInfo;
-import org.eclipse.jgit.transport.JschConfigSessionFactory;
-import org.eclipse.jgit.transport.OpenSshConfig;
-import org.eclipse.jgit.transport.SshSessionFactory;
-import org.eclipse.jgit.transport.URIish;
 
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.UserInfo;
+import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.SshSessionFactory;
 
 import test.sourcecontrol.support.GitExcutionException;
 import test.sourcecontrol.support.GitShhConfigSessionFactory;
@@ -51,9 +26,9 @@ import test.sourcecontrol.support.SourceControlExcutionException;
 
 
 public class GitFileDownloader extends FileDownloader {
-	String originalURL = "";
-	String branchName = "";
-	String completeFileLocation = "";
+	private String originalURL = "";
+	private String branchName = "";
+	private String completeFileLocation = "";
 	
 	static String PROTOCOL = "ssh";
 	private static List<String> knownHosts;
@@ -83,16 +58,20 @@ public class GitFileDownloader extends FileDownloader {
 		System.out.println("branchName :" + branchName);
 		URI gitURI;
 		this.protocol = PROTOCOL;
-        this.branchName = (branchName == null || branchName == "")? "master" : branchName;
+        //branchName = (branchName == null || branchName == "")? "master" : branchName;
         gitInput = gitInput.trim();
 		branchName = branchName.trim();
+		this.branchName = branchName;
 		this.originalURL = gitInput;
 		gitURI = getURI(gitInput);
 		this.hostName = gitURI.getHost();
 	    this.filePath = gitURI.getPath();
-//	    if(isSupportedHost(this.hostName)){
-//	    	
-//	    }
+	    if(!isSupportedHost()){
+	    	throw new MalformedURLException(this.hostName + " is not supported host ");
+	    }
+	    if(!isValidPath()){
+	    	throw new MalformedURLException(this.originalURL + " is not a valid git address:  Must be of the format: <host>/<path>.git ");
+	    }
 	    this.portNumber = getPortNumber();
 		
 		System.out.println("this.hostName :"+ this.hostName);
@@ -107,13 +86,17 @@ public class GitFileDownloader extends FileDownloader {
 		
 	}
 	
-	private boolean isSupportedHost(String hostName) {
-		
-		return false;
+	private boolean isSupportedHost() {
+		boolean supportedHost = true;
+		if(knownHosts.indexOf(this.hostName) == -1){
+			supportedHost = false;
+		}
+		return supportedHost ;
 	}
 
 	private URI getURI(String gitURL) throws MalformedURLException{
 		try {
+			System.out.println("gitURL :" + gitURL);
 			return new URI("http://"+gitURL);
 		} catch (URISyntaxException e) {
 			System.out.println (e.getCause());
@@ -152,6 +135,18 @@ public class GitFileDownloader extends FileDownloader {
 			return false;
 		}
 	}
+	
+	private boolean isValidPath(){
+		boolean resultOfValidation = true;
+		String regex = "^(.*)\\.git$";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(filePath);
+		if (!m.find()) {
+			resultOfValidation = false;
+		}
+		return resultOfValidation;
+		
+	}
 	// Build complete URL base on provided URI
 	private void constructCompleteFileLocation(){
 		String projectPreFix = "";
@@ -183,7 +178,7 @@ public class GitFileDownloader extends FileDownloader {
 	
 	
 	
-	private List<String> getGitRemoteBranchList(String gitRemoteLocation)throws  MalformedURLException, GitExcutionException, Exception {
+	private List<String> getGitRemoteBranchList(String gitRemoteLocation)throws  GitExcutionException, Exception {
 		List <String> listOfBranches;
 		 System.out.println("completeGitRepoPath : " +  completeFileLocation);
 
@@ -240,13 +235,7 @@ public class GitFileDownloader extends FileDownloader {
 	boolean validate() throws MalformedURLException, SourceControlExcutionException {
     	boolean resultOfValidation = true;
     	String errorMsg = "";
-		String regex = "^(.*)\\.git$";
-		Pattern p = Pattern.compile(regex);
-		Matcher m = p.matcher(filePath);
-		if (!m.find()) {
-			resultOfValidation = false;
-			throw new MalformedURLException("Invalid Git address. Must be of the format: <host>/<path>.git");
-		}
+
 		constructCompleteFileLocation();
 		
 			try {
@@ -254,33 +243,42 @@ public class GitFileDownloader extends FileDownloader {
 				 if(!listOfBranches.contains(branchName)){
 					 resultOfValidation = false;
 					 errorMsg = this.originalURL + " doesn't have a branch called "  + this.branchName;
+					 System.out.println("DEBUG : " + this.branchName);
 					 System.out.println("Err  :" + errorMsg);
-					 throw  new MalformedURLException(errorMsg);
+					 throw new MalformedURLException(errorMsg);
 				 }
 				
-			} catch (GitExcutionException | Exception e) {
+			} catch (GitExcutionException  e) {
 				//e.printStackTrace();
 				System.out.println("Err" + e.getMessage());
-				throw new SourceControlExcutionException("Failed during validate the source control URL" + e.getMessage());
+				throw new SourceControlExcutionException( e.getMessage());
 			} 
-//			catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				System.out.println(e.getClass());
-//				System.out.println(e.getCause());
-//				System.out.println(e.getMessage());
-//				
-//				
-//				
-//			    //e.printStackTrace();
-//			}
+			catch (Exception e) {
+				errorMsg = "Failed during accessing the specified repo: " + this.originalURL;
+				System.out.println(errorMsg);
+				throw new SourceControlExcutionException(errorMsg);
+				
+				
+			    //e.printStackTrace();
+			}
 
 		
 		return resultOfValidation;
 	}
 
 	String retrieveFiles() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		CloneCommand cloneCmd = new CloneCommand();
+		cloneCmd.setURI(completeFileLocation);
+		try {
+			cloneCmd.call();
+		} catch (GitAPIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return branchName;
+       
 	}
 	
 	
