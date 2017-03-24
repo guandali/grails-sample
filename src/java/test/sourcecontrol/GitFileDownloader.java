@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 
 
 
+
+
 import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.errors.TransportException;
 //import com.bosap.gisp.exceptions.GitCloneException;
@@ -44,6 +46,7 @@ import com.jcraft.jsch.UserInfo;
 
 import test.sourcecontrol.support.GitExcutionException;
 import test.sourcecontrol.support.GitShhConfigSessionFactory;
+import test.sourcecontrol.support.SourceControlExcutionException;
 
 
 
@@ -53,7 +56,18 @@ public class GitFileDownloader extends FileDownloader {
 	String completeFileLocation = "";
 	
 	static String PROTOCOL = "ssh";
-	private static List<String> knownHosts = new ArrayList<String>();
+	private static List<String> knownHosts;
+	static 
+	{
+		knownHosts = new ArrayList<String>();
+		knownHosts.add("github.com");
+		knownHosts.add("git.wdf.sap.corp");
+		knownHosts.add("github.wdf.sap.corp");
+		knownHosts.add("hdbgerrit.wdf.sap.corp");
+		knownHosts.add("stash.hybris.com");
+		knownHosts.add("gerrit.dhcp.den2.sap.corp");
+		
+	}
     private static final Map<String, String>  portNumberMap;
     static
     {
@@ -65,25 +79,20 @@ public class GitFileDownloader extends FileDownloader {
     	portNumberMap.put("stashport", "7999");
     }
 
-	public GitFileDownloader(String gitURL, String branchName) throws MalformedURLException {
-		//branchName = "";
+	public GitFileDownloader(String gitInput, String branchName) throws MalformedURLException {
 		System.out.println("branchName :" + branchName);
-		knownHosts.add("github.com");
-		knownHosts.add("git.wdf.sap.corp");
-		knownHosts.add("github.wdf.sap.corp");
-		knownHosts.add("hdbgerrit.wdf.sap.corp");
-		knownHosts.add("stash.hybris.com");
-		knownHosts.add("gerrit.dhcp.den2.sap.corp");
 		URI gitURI;
 		this.protocol = PROTOCOL;
         this.branchName = (branchName == null || branchName == "")? "master" : branchName;
-		gitURL = gitURL.trim();
+        gitInput = gitInput.trim();
 		branchName = branchName.trim();
-		this.originalURL = gitURL;
-		gitURI = getURI(gitURL);
-		System.out.println ("gitURI ::" + gitURI);
+		this.originalURL = gitInput;
+		gitURI = getURI(gitInput);
 		this.hostName = gitURI.getHost();
 	    this.filePath = gitURI.getPath();
+//	    if(isSupportedHost(this.hostName)){
+//	    	
+//	    }
 	    this.portNumber = getPortNumber();
 		
 		System.out.println("this.hostName :"+ this.hostName);
@@ -98,6 +107,11 @@ public class GitFileDownloader extends FileDownloader {
 		
 	}
 	
+	private boolean isSupportedHost(String hostName) {
+		
+		return false;
+	}
+
 	private URI getURI(String gitURL) throws MalformedURLException{
 		try {
 			return new URI("http://"+gitURL);
@@ -214,10 +228,8 @@ public class GitFileDownloader extends FileDownloader {
 		catch(TransportException  e ){
 			    String errMsg = "";
 				System.out.println(e.getClass());
-				errMsg = "URL Format is valid, failed during run git command check if GTLC has access to the repo: ";
-                
-			
-			throw new GitExcutionException(errMsg + this.originalURL);
+				errMsg = "URL Format is valid, failed during run git command check if GTLC has access to the repo: ";  
+			    throw new GitExcutionException(errMsg + this.originalURL);
 
 			
 		}
@@ -225,8 +237,9 @@ public class GitFileDownloader extends FileDownloader {
 		
 	}
     @Override
-	boolean validate() throws MalformedURLException {
+	boolean validate() throws MalformedURLException, SourceControlExcutionException {
     	boolean resultOfValidation = true;
+    	String errorMsg = "";
 		String regex = "^(.*)\\.git$";
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(filePath);
@@ -240,18 +253,26 @@ public class GitFileDownloader extends FileDownloader {
 				 List <String> listOfBranches = getGitRemoteBranchList(completeFileLocation);
 				 if(!listOfBranches.contains(branchName)){
 					 resultOfValidation = false;
-					 String msg = this.originalURL + " doesn't have a branch called "  + this.branchName;
-					 System.out.println("Err :" + msg);
-					 throw  new MalformedURLException(msg);
+					 errorMsg = this.originalURL + " doesn't have a branch called "  + this.branchName;
+					 System.out.println("Err  :" + errorMsg);
+					 throw  new MalformedURLException(errorMsg);
 				 }
 				
-			} catch (GitExcutionException  e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} catch (GitExcutionException | Exception e) {
+				//e.printStackTrace();
+				System.out.println("Err" + e.getMessage());
+				throw new SourceControlExcutionException("Failed during validate the source control URL" + e.getMessage());
+			} 
+//			catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				System.out.println(e.getClass());
+//				System.out.println(e.getCause());
+//				System.out.println(e.getMessage());
+//				
+//				
+//				
+//			    //e.printStackTrace();
+//			}
 
 		
 		return resultOfValidation;

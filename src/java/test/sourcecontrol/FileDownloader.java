@@ -2,6 +2,8 @@ package test.sourcecontrol;
 
 import java.net.MalformedURLException;
 
+import test.sourcecontrol.support.SourceControlExcutionException;
+
 public abstract class FileDownloader {
 	String hostName = "";
 	int portNumber = 0;
@@ -12,7 +14,7 @@ public abstract class FileDownloader {
 	
 	}
 	
-	abstract boolean validate() throws MalformedURLException;
+	abstract boolean validate() throws MalformedURLException, SourceControlExcutionException;
 	abstract String retrieveFiles();
 
 }

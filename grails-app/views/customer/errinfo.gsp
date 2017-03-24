@@ -13,7 +13,7 @@
 			</h4>
 		</div>
 		<div class="panel panel-primary">
-		${failure.message}
+			${failure.message}
 		</div>
 	</div>
 </body>
