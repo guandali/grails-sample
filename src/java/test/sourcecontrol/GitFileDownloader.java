@@ -48,7 +48,7 @@ import test.sourcecontrol.support.GitShhConfigSessionFactory;
 
 
 public class GitFileDownloader extends FileDownloader {
-	
+	String originalURL = "";
 	String branchName = "";
 	String completeFileLocation = "";
 	
@@ -79,7 +79,7 @@ public class GitFileDownloader extends FileDownloader {
         this.branchName = (branchName == null || branchName == "")? "master" : branchName;
 		gitURL = gitURL.trim();
 		branchName = branchName.trim();
-		
+		this.originalURL = gitURL;
 		gitURI = getURI(gitURL);
 		System.out.println ("gitURI ::" + gitURI);
 		this.hostName = gitURI.getHost();
@@ -182,32 +182,6 @@ public class GitFileDownloader extends FileDownloader {
 				SshSessionFactory.setInstance(sessionFactory);
 				//Construct a ls-remote command and call it through SSH
 				// Throw NoRemoteRepositoryException, JSchException
-//			JschConfigSessionFactory sessionFactory = new JschConfigSessionFactory() {
-//				@Override
-//				protected void configure(OpenSshConfig.Host hc, Session session) {
-//				    CredentialsProvider provider = new CredentialsProvider() {
-//				        @Override
-//				        public boolean isInteractive() {
-//				            return false;
-//				        }
-//
-//				        @Override
-//				        public boolean supports(CredentialItem... items) {
-//				            return true;
-//				        }
-//
-//				        @Override
-//				        public boolean get(URIish uri, CredentialItem... items) throws UnsupportedCredentialItem {
-//				            for (CredentialItem item : items) {
-//				                ((CredentialItem.StringType) item).setValue("123456");
-//				            }
-//				            return true;
-//				        }
-//				    };
-//				    UserInfo userInfo = new CredentialsProviderUserInfo(session, provider);
-//				    session.setUserInfo(userInfo);
-//				}
-//				};
 //				SshSessionFactory.setInstance(sessionFactory);
 				
 				
@@ -243,7 +217,7 @@ public class GitFileDownloader extends FileDownloader {
 				errMsg = "URL Format is valid, failed during run git command check if GTLC has access to the repo: ";
                 
 			
-			throw new GitExcutionException(errMsg + gitRemoteLocation);
+			throw new GitExcutionException(errMsg + this.originalURL);
 
 			
 		}
@@ -263,7 +237,14 @@ public class GitFileDownloader extends FileDownloader {
 		constructCompleteFileLocation();
 		
 			try {
-				List <String> listOfBranches = getGitRemoteBranchList(completeFileLocation);
+				 List <String> listOfBranches = getGitRemoteBranchList(completeFileLocation);
+				 if(!listOfBranches.contains(branchName)){
+					 resultOfValidation = false;
+					 String msg = this.originalURL + " doesn't have a branch called "  + this.branchName;
+					 System.out.println("Err :" + msg);
+					 throw  new MalformedURLException(msg);
+				 }
+				
 			} catch (GitExcutionException  e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
