@@ -1,5 +1,6 @@
 package test.sourcecontrol;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -9,10 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Date;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 //import com.bosap.gisp.exceptions.GitCloneException;
 
@@ -29,6 +32,8 @@ public class GitFileDownloader extends FileDownloader {
 	private String originalURL = "";
 	private String branchName = "";
 	private String completeFileLocation = "";
+	private String localDir = "upload_data";
+	private Date date = new Date();
 	
 	static String PROTOCOL = "ssh";
 	private static List<String> knownHosts;
@@ -235,18 +240,11 @@ public class GitFileDownloader extends FileDownloader {
 	boolean validate() throws MalformedURLException, SourceControlExcutionException {
     	boolean resultOfValidation = true;
     	String errorMsg = "";
-
+    	List <String> listOfBranches;
 		constructCompleteFileLocation();
 		
 			try {
-				 List <String> listOfBranches = getGitRemoteBranchList(completeFileLocation);
-				 if(!listOfBranches.contains(branchName)){
-					 resultOfValidation = false;
-					 errorMsg = this.originalURL + " doesn't have a branch called "  + this.branchName;
-					 System.out.println("DEBUG : " + this.branchName);
-					 System.out.println("Err  :" + errorMsg);
-					 throw new MalformedURLException(errorMsg);
-				 }
+				 listOfBranches = getGitRemoteBranchList(completeFileLocation);
 				
 			} catch (GitExcutionException  e) {
 				//e.printStackTrace();
@@ -261,24 +259,66 @@ public class GitFileDownloader extends FileDownloader {
 				
 			    //e.printStackTrace();
 			}
+			 if(!listOfBranches.contains(branchName)){
+				 resultOfValidation = false;
+				 errorMsg = this.originalURL + " doesn't have a branch called "  + this.branchName;
+				 System.out.println("DEBUG : " + this.branchName);
+				 System.out.println("Error  :" + errorMsg);
+				 throw new SourceControlExcutionException(errorMsg);
+			 }
 
 		
 		return resultOfValidation;
 	}
 
-	String retrieveFiles() {
-		
-		CloneCommand cloneCmd = new CloneCommand();
-		cloneCmd.setURI(completeFileLocation);
-		try {
+	File retrieveFiles() throws SourceControlExcutionException {
+	   File gitFile = createUniqueFile();	
+	   System.out.println("branchName :" + branchName);
+	   CloneCommand cloneCmd = new CloneCommand();
+	   cloneCmd.setURI(completeFileLocation);
+	   cloneCmd.setBranch(branchName);
+	   cloneCmd.setDirectory(gitFile);
+		JschConfigSessionFactory sessionFactory = new GitShhConfigSessionFactory();
+		SshSessionFactory.setInstance(sessionFactory);
+	   try {
 			cloneCmd.call();
+		} catch (InvalidRemoteException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			System.out.println(e.getCause());
+		    e.printStackTrace();
+		    throw new SourceControlExcutionException("Failed due to invalid remote address");
+		} catch (TransportException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (GitAPIException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return branchName;
+	   System.out.println("File" + gitFile.toString());
+	   return gitFile;
+	   
        
+       
+	}
+
+	private File createUniqueFile() throws SourceControlExcutionException {
+		File file;
+		String errorMsg = "";
+        String fileName = "";
+        fileName = filePath.replace('/', ' ');
+        fileName = fileName.replace(".git", "-"+branchName + "-" + date.getTime());
+        System.out.println("fileName :" + fileName);
+        file = new File(localDir + "/"+ fileName);
+		if(file.exists()){
+			errorMsg = "There is already a copy of this file under directory :" + file;
+			throw new SourceControlExcutionException(errorMsg);
+		}
+		file.mkdir();
+		return file;
+        
+		
+		
 	}
 	
 	

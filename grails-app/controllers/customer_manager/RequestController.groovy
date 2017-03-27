@@ -27,6 +27,7 @@ class RequestController extends RestfulController {
 			
 		}catch(MalformedURLException | 	SourceControlExcutionException e ){
 		   // println e.printStackTrace();
+		   System.out.println("Exception: using FileDownloader");
 	       println "exception information :" + e.getMessage();
 		}
 		
