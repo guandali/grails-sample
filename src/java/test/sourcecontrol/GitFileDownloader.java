@@ -60,14 +60,15 @@ public class GitFileDownloader extends FileDownloader {
     }
 
 	public GitFileDownloader(String gitInput, String branchName) throws MalformedURLException {
-		System.out.println("branchName :" + branchName);
+		//System.out.println("branchName :" + branchName);
 		URI gitURI;
-		this.protocol = PROTOCOL;
+		
         //branchName = (branchName == null || branchName == "")? "master" : branchName;
         gitInput = gitInput.trim();
 		branchName = branchName.trim();
 		this.branchName = branchName;
 		this.originalURL = gitInput;
+		this.protocol = PROTOCOL;
 		gitURI = getURI(gitInput);
 		this.hostName = gitURI.getHost();
 	    this.filePath = gitURI.getPath();
@@ -194,9 +195,12 @@ public class GitFileDownloader extends FileDownloader {
 				// IMPORTANT: passpharse for ssh is hard-coded in GitShhConfigSessionFactory, neeed to let it pull from config file
 				JschConfigSessionFactory sessionFactory = new GitShhConfigSessionFactory();
 				SshSessionFactory.setInstance(sessionFactory);
+				
+				
+				
 				//Construct a ls-remote command and call it through SSH
 				// Throw NoRemoteRepositoryException, JSchException
-//				SshSessionFactory.setInstance(sessionFactory);
+                //	SshSessionFactory.setInstance(sessionFactory);
 				
 				
 				final LsRemoteCommand lsCmd = new LsRemoteCommand(null);
@@ -252,6 +256,9 @@ public class GitFileDownloader extends FileDownloader {
 				throw new SourceControlExcutionException( e.getMessage());
 			} 
 			catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("DEBUG : " + e.getCause());
+				System.out.println("Error  :" + e.getMessage());
 				errorMsg = "Failed during accessing the specified repo: " + this.originalURL;
 				System.out.println(errorMsg);
 				throw new SourceControlExcutionException(errorMsg);
@@ -278,8 +285,8 @@ public class GitFileDownloader extends FileDownloader {
 	   cloneCmd.setURI(completeFileLocation);
 	   cloneCmd.setBranch(branchName);
 	   cloneCmd.setDirectory(gitFile);
-		JschConfigSessionFactory sessionFactory = new GitShhConfigSessionFactory();
-		SshSessionFactory.setInstance(sessionFactory);
+//		JschConfigSessionFactory sessionFactory = new GitShhConfigSessionFactory();
+//		SshSessionFactory.setInstance(sessionFactory);
 	   try {
 			cloneCmd.call();
 		} catch (InvalidRemoteException e) {
@@ -320,9 +327,6 @@ public class GitFileDownloader extends FileDownloader {
 		
 		
 	}
-	
-	
-	
 	
 
 }
