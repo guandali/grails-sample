@@ -18,7 +18,7 @@ public class FileDownloaderFactory {
 
 		// We can create more if we have implementation 
 		else {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Unknown Source Control System");
 		}
 		return tempDownloader;
 		
