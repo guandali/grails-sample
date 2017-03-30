@@ -48,7 +48,7 @@ public class PropertyConfig {
 	String stashport
 	
 	String gispScripts
-	String knowngithosts
+	 String knowngithosts
 	//String shipnotship
 	String environmenttype
 	String proddownloadlocation

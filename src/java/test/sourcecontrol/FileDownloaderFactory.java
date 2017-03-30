@@ -2,6 +2,8 @@ package test.sourcecontrol;
 
 import java.net.MalformedURLException;
 
+import com.bosap.gisp.PropertyConfig;
+
 
 
 public class FileDownloaderFactory {
@@ -10,10 +12,10 @@ public class FileDownloaderFactory {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static FileDownloader getFileDownloder(String typeOfFile, String resourceUrl, String typeRelatedInformation) throws MalformedURLException {
+	public static FileDownloader getFileDownloder(String typeOfFile, String resourceUrl, String typeRelatedInformation, PropertyConfig propertyConfig) throws MalformedURLException {
 		FileDownloader tempDownloader = null;
 		if(typeOfFile.equals("GIT")){
-			tempDownloader = new GitFileDownloader(resourceUrl,typeRelatedInformation );
+			tempDownloader = new GitFileDownloader(resourceUrl,typeRelatedInformation, propertyConfig);
 		}
 
 		// We can create more if we have implementation 

@@ -25,11 +25,7 @@ class RequestController extends RestfulController {
 		String typeRelatedInformation = params.typeRelatedInformation;
 		
 		try {
-			FileDownloaderFactory factory = new FileDownloaderFactory();
-			FileDownloader fileDownloader =  factory.getFileDownloder(typeOfFile, resourceURL, typeRelatedInformation);
-			if(!fileDownloader.validate()) isSuccess = false;
-			File localFile = fileDownloader.retrieveFiles();
-			fileName = localFile.toString();
+
 			
 			
 		}catch(IllegalArgumentException |MalformedURLException | SourceControlExcutionException e ){

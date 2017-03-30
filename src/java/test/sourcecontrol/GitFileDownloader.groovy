@@ -22,6 +22,8 @@ import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.eclipse.jgit.transport.SshSessionFactory;
 
+import com.bosap.gisp.PropertyConfig;
+
 import test.sourcecontrol.support.GitExcutionException;
 import test.sourcecontrol.support.GitShhConfigSessionFactory;
 import test.sourcecontrol.support.SourceControlExcutionException;
@@ -35,31 +37,13 @@ public class GitFileDownloader extends FileDownloader {
 	private String localDir = "upload_data";
 	private Date date = new Date();
 	
-	static String PROTOCOL = "ssh";
-	private static List<String> knownHosts;
-	static 
-	{
-		knownHosts = new ArrayList<String>();
-		knownHosts.add("github.com");
-		knownHosts.add("git.wdf.sap.corp");
-		knownHosts.add("github.wdf.sap.corp");
-		knownHosts.add("hdbgerrit.wdf.sap.corp");
-		knownHosts.add("stash.hybris.com");
-		knownHosts.add("gerrit.dhcp.den2.sap.corp");
-		
-	}
-    private static final Map<String, String>  portNumberMap;
-    static
-    {
-    	portNumberMap = new HashMap<String, String>();
-    	portNumberMap.put("gerritport", "29418");
-    	portNumberMap.put("gitport", "29418");
-    	portNumberMap.put("githubport", "22");
-    	portNumberMap.put("hdbgerritport", "29418");
-    	portNumberMap.put("stashport", "7999");
-    }
+	String PROTOCOL = "ssh";
+	private List<String> knownHosts;
+    private Map<String, Integer>  portNumberMap;
 
-	public GitFileDownloader(String gitInput, String branchName) throws MalformedURLException {
+
+	public GitFileDownloader(String gitInput, String branchName, PropertyConfig propertyConfig) throws MalformedURLException {
+		super(propertyConfig);
 		//System.out.println("branchName :" + branchName);
 		URI gitURI;
 		
@@ -78,7 +62,7 @@ public class GitFileDownloader extends FileDownloader {
 	    if(!isValidPath()){
 	    	throw new MalformedURLException(this.originalURL + " is not a valid git address:  Must be of the format: <host>/<path>.git ");
 	    }
-	    this.portNumber = getPortNumber();
+	    this.portNumber = getHostPortNumber(this.hostName);
 		
 		System.out.println("this.hostName :"+ this.hostName);
 		System.out.println("this.portNumber :"+ this.portNumber);
@@ -90,6 +74,20 @@ public class GitFileDownloader extends FileDownloader {
 		
 		
 		
+	}
+	@Override
+	void resolveConfig() {
+		System.out.println("Resolving git config files");
+		knownHosts = propertyConfig.getConfig(propertyConfig.knowngithosts).split(propertyConfig.getConfig(propertyConfig.delimiter));
+		println knownHosts ;
+		for (String hostName : knownHosts ){
+			String hostPortConfig = getHostAlias(hostName) + "port";
+			println "hostPortConfig  "  + hostPortConfig;
+			int hostPortNum = Integer.parseInt(propertyConfig.getConfig(hostPortConfig).toString().trim());
+			
+			println "hostPortNum  "  + hostPortNum;
+			portNumberMap.put(hostPortConfig, hostPortNum);
+		}
 	}
 	
 	private boolean isSupportedHost() {
@@ -113,11 +111,11 @@ public class GitFileDownloader extends FileDownloader {
 		
 	}
 	
-	private int getPortNumber() throws MalformedURLException{
+	private int getHostPortNumber(String hostName) throws MalformedURLException{
 
-		String portConfig = getHostAlias() + "port";
+		String portConfig = getHostAlias(hostName) + "port";
 		try{
-			this.portNumber = Integer.parseInt(portNumberMap.get(portConfig));
+			this.portNumber = portNumberMap.get(portConfig);
 			System.out.println("portNumber is" + this.portNumber);
 			return portNumber;
 		}
@@ -126,8 +124,8 @@ public class GitFileDownloader extends FileDownloader {
 		}
 	}
 	
-	private String getHostAlias(){
-		String hostAlias = this.hostName.split("\\.")[0];
+	private String getHostAlias(String hostName){
+		String hostAlias = hostName.split("\\.")[0];
 		System.out.println("hostAlias : " + hostAlias); 
 		return hostAlias;
 		
@@ -144,7 +142,7 @@ public class GitFileDownloader extends FileDownloader {
 	
 	private boolean isValidPath(){
 		boolean resultOfValidation = true;
-		String regex = "^(.*)\\.git$";
+		String regex = '^(.*)\\.git$';
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(filePath);
 		if (!m.find()) {
@@ -158,7 +156,7 @@ public class GitFileDownloader extends FileDownloader {
 		String projectPreFix = "";
 		String projectPostFix = this.filePath;
 		projectPreFix = projectPreFix + "ssh://";
-		if (getHostAlias().equals("github")) {
+		if (getHostAlias(this.hostName).equals("github")) {
 			projectPreFix = projectPreFix + "git@";
 		} else {
 			projectPreFix = projectPreFix + "sapbd@";
@@ -327,6 +325,8 @@ public class GitFileDownloader extends FileDownloader {
 		
 		
 	}
+
+
 	
 
 }
